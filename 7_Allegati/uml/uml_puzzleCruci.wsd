@@ -1,0 +1,56 @@
+@startuml
+' UML Progetto
+' Linguaggio: JavaScript, HTML, CSS
+
+skinparam classAttributeIconSize 0
+class Gioco {
+ difficolta: Difficolta
+ arrayGioco:String[][]
+ parole: Parole
+ font:Font
+
+ Gioco(Difficolta difficolta, Parole parole, Font font)
+ 
+ GeneraGioco()
+
+}
+class Parole{
+ fileParole:File
+ arrayParole:String[]
+ parolaFinale: String
+
+ GeneraParole()
+ PrendiParoleDaFile()
+}
+class Modalita{
+ modalita:String
+
+ getModalita()
+}
+class Difficolta{
+ difficolta:String
+ modalita:Modalita
+ grandezzaMatriceX: Number
+ grandezzaMatriceY: Number
+ paroleDaTrovare: Number
+ parolaFinaleEsiste: Boolean
+
+ Difficolta(Modalita modalita)
+
+ getMatriceX()
+ getMatriceY()
+ getParoleDaTrovare()
+ getParolaFinaleEsiste()
+
+}
+class Font{
+    font:String
+
+    getFont()
+}
+
+Difficolta --> Gioco
+Parole --> Gioco
+Font --> Gioco
+Modalita --> Difficolta
+@enduml
