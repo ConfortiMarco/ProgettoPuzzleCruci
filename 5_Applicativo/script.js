@@ -107,16 +107,21 @@ class Gioco {
                 continue;
             }
             if(this.controllaParolaInGrid(genPar)){
+                console.log(i+" "+genPar);
                 i++;
             }
         }
+        this.stampaTabella();
     }
 
 
     controllaParolaInGrid(parola){
         var a = this.getPositionParola(parola).split(" ");
         console.log(a);
-        if(this.controlloArray(a[0],a[1],a[2],a[3])){
+        if(this.controlloArray(parola,a[0],a[1],a[2])){
+            this.inserisciDati(parola,a[0],a[1],a[2]);
+            console.log(this.arrayGioco);
+            console.log(this.arrayPosizioni);
             return true;
         }else{
             return false;
@@ -124,38 +129,107 @@ class Gioco {
         
     }
 
-    controlloArray(x,y,lparola,direzione){
+    inserisciDati(parola,x,y,direzione){
+        console.log(parola);
         if (direzione == "r") {
-            for(var i = x;i<lparola;i++){
-                if(this.arrayGioco[i][y] != this.parola[i] || this.arrayPosizioni[i][y] == "r"){
-                    return false;
-                }
+            var spo = 0;
+            var sss = parseInt(y);
+            for(var i = y;i<parola.length + sss;i++){
+                console.log(spo);
+                this.arrayGioco[x][i] = parola[spo];
+                this.arrayPosizioni[x][i] = "r";
+                spo++;
             }
-            return true;
         } else if (direzione == "l") {
-            for(var i = x;i<this.difficolta.grandezzaMatriceX-lparola;i--){
-                if(this.arrayGioco[i][y] != this.parola[i] || this.arrayPosizioni[i][y] == "l"){
-                    return false;
-                }
+            var spo = 0;
+            for(var i = x;i<(this.difficolta.grandezzaMatriceX-lparola);i--){
+                this.arrayGioco[i][y] = parola[spo];
+                this.arrayPosizioni[i][y] = "l";
+                spo++;
+                
             }
-            return true;
         } else if (direzione == "s") {
-            for(var i = y;i<lparola;i++){
-                if(this.arrayGioco[x][i] != this.parola[i] || this.arrayPosizioni[x][i] == "s"){
+            
+            var spo = 0;
+            var sss = parseInt(x);
+            for(var i = x;i<parola.length+sss;i++){
+                this.arrayGioco[i][y] = parola[spo];
+                this.arrayPosizioni[i][y] = "s";
+                spo++;
+                
+            }
+        } else if (direzione == "a") {
+            var spo = 0;
+            for(var i = y;i<(this.difficolta.grandezzaMatriceY) - lparola;i++){
+                this.arrayGioco[x][i] = parola[spo];
+                this.arrayPosizioni[x][i] = "a";
+                spo++;
+            }
+        }
+    }
+
+    controlloArray(parola,x,y,direzione){
+        if (direzione == "r") {
+            var spo = 0;
+            var isOk = true;
+            console.log("a "+ parola.length);
+            console.log(parola.length + y);
+            var sss = parseInt(y);
+            for(var i = y;i<parola.length+sss;i++){
+                console.log("eseg: "+parola[spo] + " " + this.arrayGioco[x][i]);
+                if((this.arrayGioco[i][y] != "-" || this.arrayGioco[i][y] != parola[spo] || this.arrayPosizioni[i][y] == "r")){
+                    isOk = false;
+                }
+                spo++;
+            }
+            console.log(isOk);
+            return isOk;
+        } else if (direzione == "l") {
+            /**
+            var spo = 0;
+            for(var i = x;i<this.difficolta.grandezzaMatriceX-lparola;i--){
+                if((this.arrayGioco[x][i] != "-" && this.arrayGioco[x][i] != parola[spo]) || (this.arrayPosizioni[x][i] == "l")){
                     return false;
                 }
+                spo++;
             }
             return true;
+            */
+            return false;
+        } else if (direzione == "s") {
+            var isOk = true;
+            var spo = 0;
+            var sss = parseInt(x);
+            for(var i = x;i<parola.length + sss;i++){
+                console.log("eseg: "+parola[spo] + " " + this.arrayGioco[x][i]);
+                if((this.arrayGioco[x][i] != "-" || this.arrayGioco[x][i] != parola[spo]) || this.arrayPosizioni[x][i] == "s"){
+                    console.log("ritfalse");
+                    isOk = false;
+                }
+                
+                spo++;
+            }
+            console.log(isOk);
+            return isOk;
         } else if (direzione == "a") {
-            
+            /**var spo = 0;
+            for(var i = y;i<this.difficolta.grandezzaMatriceY - lparola;i++){
+                if((this.arrayGioco[i][y] != "-" && this.arrayGioco[i][y] != parola[spo]) || (this.arrayPosizioni[i][y] == "a")){
+                    return false;
+                }
+                spo++;
+            }
+            return true;
+            */
+           return false;
         } else if (direzione == "sr") {
-            
+            return false;
         } else if (direzione == "sl") {
-            
+            return false;
         } else if (direzione == "ar") {
-            
+            return false;
         } else if (direzione == "al") {
-            
+            return false;
         }
     }
 
@@ -189,14 +263,15 @@ class Gioco {
         var posizioneX = null;
         var posizioneY = null;
         if (direzione == "r") {
-            posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola));
-            posizioneY = Math.floor(Math.random() * this.difficolta.grandezzaMatriceY);
+            posizioneX = Math.floor(Math.random() * this.difficolta.grandezzaMatriceX);
+            posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola));
         } else if (direzione == "l") {
             posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola)) + lunghezzaParola;
             posizioneY = Math.floor(Math.random() * this.difficolta.grandezzaMatriceY);
         } else if (direzione == "s") {
-            posizioneX = Math.floor(Math.random() * this.difficolta.grandezzaMatriceX);
-            posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola));
+            posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola));
+            posizioneY = Math.floor(Math.random() * this.difficolta.grandezzaMatriceY);
+            
         } else if (direzione == "a") {
             posizioneX = Math.floor(Math.random() * this.difficolta.grandezzaMatriceX);
             posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola)) + lunghezzaParola;
@@ -214,13 +289,12 @@ class Gioco {
             posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola)) + (this.difficolta.grandezzaMatriceY - posizioneX);
         }
         console.log("lParola: "+lunghezzaParola+" dir: "+direzione+" X: "+posizioneX+" Y: "+posizioneY);
-        return posizioneX + " " + posizioneY + " " + lunghezzaParola + " " + direzione;
+        return posizioneX + " " + posizioneY + " " + direzione;
 
 
     }
 
     stampaTabella() {
-        this.creaArray();
         document.getElementById("result").innerHTML = "";
         var tabelle = "<table>"
         for (var i = 0; i < this.arrayGioco.length; i++) {
