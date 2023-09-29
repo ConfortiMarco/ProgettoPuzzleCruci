@@ -9,7 +9,7 @@ class Difficolta {
     constructor() {
         this.modalita = new Modalita();
         this.difficolta = "facile";
-        this.paroleDaTrovare = 9;
+        this.paroleDaTrovare = 15;
         this.grandezzaMatriceX = 10;
         this.grandezzaMatriceY = 10;
         this.parolaFinaleEsiste = false;
@@ -44,8 +44,6 @@ class Parole {
     }
 
     readFile() {
-        var nParole = this.difficolta.paroleDaTrovare;
-        
         return new Promise((resolve, reject) => {
             const xhttp = new XMLHttpRequest();
             xhttp.onload = function () {
@@ -102,7 +100,7 @@ class Gioco {
         while(i<this.difficolta.paroleDaTrovare){
             var dir = Math.floor(Math.random() * this.parole.arrayParole.length);
             var genPar = this.parole.arrayParole[dir];
-            if(genPar.length>this.difficolta.grandezzaMatriceX){
+            if(genPar.length<2 || genPar.length>this.difficolta.grandezzaMatriceX-1){
                 continue;
             }
             if(this.controllaParolaInGrid(genPar)){
@@ -164,6 +162,42 @@ class Gioco {
                 spo++;
                 
             }
+        }else if (direzione=="sr"){
+            var spo = 0;
+            var ssy = parseInt(y);
+            var ssx = parseInt(x);
+            for(var i = 0;i<parola.length;i++){
+                this.arrayGioco[ssy+i][ssx+i] = parola[spo];
+                this.arrayPosizioni[ssy+i][ssx+i] += "sr ";
+                spo++;
+            }
+        }else if (direzione=="sl"){
+            var spo = 0;
+            var ssy = parseInt(y);
+            var ssx = parseInt(x);
+            for(var i = 0;i<parola.length;i++){
+                this.arrayGioco[ssy-i][ssx-i] = parola[spo];
+                this.arrayPosizioni[ssy-i][ssx-i] += "sr ";
+                spo++;
+            }
+        }else if (direzione=="ar"){
+            var spo = 0;
+            var ssy = parseInt(y);
+            var ssx = parseInt(x);
+            for(var i = 0;i<parola.length;i++){
+                this.arrayGioco[ssy-i][ssx+i] = parola[spo];
+                this.arrayPosizioni[ssy-i][ssx+i] += "sr ";
+                spo++;
+            }
+        }else if (direzione=="al"){
+            var spo = 0;
+            var ssy = parseInt(y);
+            var ssx = parseInt(x);
+            for(var i = 0;i<parola.length;i++){
+                this.arrayGioco[ssy+i][ssx-i] = parola[spo];
+                this.arrayPosizioni[ssy+i][ssx-i] += "sr ";
+                spo++;
+            }
         }
     }
 
@@ -173,7 +207,6 @@ class Gioco {
             var isOk = true;
             var sss = parseInt(y);
             for(var i = sss;i<parola.length+sss;i++){
-                console.log(this.arrayGioco[i][x] + " "+ parola[spo]);
                 if(this.arrayGioco[i][x] == "-"){
                     spo++;
                     continue;
@@ -187,7 +220,6 @@ class Gioco {
                 }
                 spo++;
             }
-            
             return isOk;
         } else if (direzione == "l") {
             
@@ -195,7 +227,6 @@ class Gioco {
             var isOk = true;
             var sss = parseInt(y);
             for(var i = sss;i>sss-parola.length;i--){
-                console.log(this.arrayGioco[i][x] + " "+ parola[spo]);
                 if(this.arrayGioco[i][x] == "-"){
                     spo++;
                     continue;
@@ -208,15 +239,12 @@ class Gioco {
                 }
                 spo++;
             }
-            
             return isOk;
-
         } else if (direzione == "s") {
             var isOk = true;
             var spo = 0;
             var sss = parseInt(x);
             for(var i = sss;i<parola.length + sss;i++){
-                console.log(this.arrayGioco[y][i] + " "+ parola[spo]);
                 if(this.arrayGioco[y][i] == "-" ){
                     spo++;
                     continue;
@@ -229,14 +257,12 @@ class Gioco {
                 }
                 spo++;
             }
-            
             return isOk;
         } else if (direzione == "a") {
             var isOk = true;
             var spo = 0;
             var sss = parseInt(x);
             for(var i = sss;i>sss-parola.length;i--){
-                console.log(this.arrayGioco[y][i] + " "+ parola[spo]);
                 if(this.arrayGioco[y][i] == "-" ){
                     spo++;
                     continue;
@@ -249,16 +275,84 @@ class Gioco {
                 }
                 spo++;
             }
-            
             return isOk;
         } else if (direzione == "sr") {
-            return false;
+            var isOk = true;
+            var spo = 0;
+            var ssx = parseInt(x);
+            var ssy = parseInt(y);
+            for(var i = 0;i<parola.length;i++){
+                if(this.arrayGioco[ssy+i][ssx+i] == "-" ){
+                    spo++;
+                    continue;
+                }
+                if(this.arrayGioco[ssy+i][ssx+i] != parola[spo]){
+                    isOk = false;
+                }
+                if(this.arrayPosizioni[ssy+i][ssx+i].includes("sr")){
+                    isOk = false;
+                }
+                spo++;
+            }
+            return isOk;
         } else if (direzione == "sl") {
-            return false;
+            var isOk = true;
+            var spo = 0;
+            var ssx = parseInt(x);
+            var ssy = parseInt(y);
+            for(var i = 0;i<parola.length;i++){
+                if(this.arrayGioco[ssy-i][ssx-i] == "-" ){
+                    spo++;
+                    continue;
+                }
+                if(this.arrayGioco[ssy-i][ssx-i] != parola[spo]){
+                    isOk = false;
+                }
+                if(this.arrayPosizioni[ssy-i][ssx-i].includes("sl")){
+                    isOk = false;
+                }
+                spo++;
+            }
+            return isOk;
         } else if (direzione == "ar") {
-            return false;
+            var isOk = true;
+            var spo = 0;
+            var ssx = parseInt(x);
+            var ssy = parseInt(y);
+            for(var i = 0;i<parola.length;i++){
+                if(this.arrayGioco[ssy-i][ssx+i] == "-" ){
+                    spo++;
+                    continue;
+                }
+                if(this.arrayGioco[ssy-i][ssx+i] != parola[spo]){
+                    isOk = false;
+                }
+                if(this.arrayPosizioni[ssy-i][ssx+i].includes("ar")){
+                    isOk = false;
+                }
+                spo++;
+            }
+            return isOk;
         } else if (direzione == "al") {
-            return false;
+            var isOk = true;
+            var spo = 0;
+            var ssx = parseInt(x);
+            var ssy = parseInt(y);
+            for(var i = 0;i<parola.length;i++){
+                if(this.arrayGioco[ssy+i][ssx-i] == "-" ){
+                    spo++;
+                    continue;
+                }
+                if(this.arrayGioco[ssy+i][ssx-i] != parola[spo]){
+                    isOk = false;
+                }
+                if(this.arrayPosizioni[ssy+i][ssx-i].includes("ar")){
+                    isOk = false;
+                }
+                spo++;
+            }
+            
+            return isOk;
         }
     }
 
@@ -278,9 +372,9 @@ class Gioco {
             case 5:
                 return "ar"; // obliquo verso alto destra
             case 6:
-                return "sl"; // obliquo verso basso sinistra
+                return "sl"; // obliquo verso alto sinistra
             case 7:
-                return "al"; // obliquo verso alto sinistra
+                return "al"; // obliquo verso basso sinistra
         }
 
     }
@@ -295,27 +389,26 @@ class Gioco {
             posizioneX = Math.floor(Math.random() * this.difficolta.grandezzaMatriceX);
             posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola));
         } else if (direzione == "l") {
-            posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola)) + lunghezzaParola -1 ;
-            posizioneX = Math.floor(Math.random() * this.difficolta.grandezzaMatriceY);
+            posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola)) + lunghezzaParola -1 ;
+            posizioneX = Math.floor(Math.random() * this.difficolta.grandezzaMatriceX);
         } else if (direzione == "s") {
             posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola));
-            posizioneY = Math.floor(Math.random() * this.difficolta.grandezzaMatriceY);
-            
+            posizioneY = Math.floor(Math.random() * this.difficolta.grandezzaMatriceY); 
         } else if (direzione == "a") {
-            posizioneY = Math.floor(Math.random() * this.difficolta.grandezzaMatriceX);
-            posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola)) + lunghezzaParola-1;
-        } else if (direzione == "sr") {
-            posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola));
-            posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola)) + posizioneX;
-        } else if (direzione == "sl") {
+            posizioneY = Math.floor(Math.random() * this.difficolta.grandezzaMatriceY);
             posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola)) + lunghezzaParola-1;
-            posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola)) + posizioneX;
+        } else if (direzione == "sr") {
+            posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola + 1));
+            posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX -lunghezzaParola));
+        } else if (direzione == "sl") {
+            posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola+1)) + lunghezzaParola-1;
+            posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola)) + lunghezzaParola;
         } else if (direzione == "ar") {
+            posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola)) + lunghezzaParola;
             posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola));
-            posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola)) + (this.difficolta.grandezzaMatriceY - posizioneX);
         } else if (direzione == "al") {
+            posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola));
             posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola)) + lunghezzaParola;
-            posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola)) + (this.difficolta.grandezzaMatriceY - posizioneX);
         }
         return posizioneX + " " + posizioneY + " " + direzione;
 
