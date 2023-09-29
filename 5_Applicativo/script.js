@@ -9,7 +9,7 @@ class Difficolta {
     constructor() {
         this.modalita = new Modalita();
         this.difficolta = "facile";
-        this.paroleDaTrovare = 10;
+        this.paroleDaTrovare = 9;
         this.grandezzaMatriceX = 10;
         this.grandezzaMatriceY = 10;
         this.parolaFinaleEsiste = false;
@@ -27,7 +27,7 @@ class Parole {
     setFile() {
         try {
             var x = document.getElementById("files").files[0].name;
-            console.log(x);
+            
             this.filePath = x;
         } catch {
             this.filePath = "280000_parole_italiane.txt";
@@ -45,7 +45,7 @@ class Parole {
 
     readFile() {
         var nParole = this.difficolta.paroleDaTrovare;
-        console.log(nParole);
+        
         return new Promise((resolve, reject) => {
             const xhttp = new XMLHttpRequest();
             xhttp.onload = function () {
@@ -85,7 +85,7 @@ class Gioco {
             this.arrayGioco[i] = new Array(this.difficolta.grandezzaMatriceY);
         }
         var ngi = this.arrayGioco.length;
-        console.log(ngi);
+        
         for (var i = 0; i < ngi; i++) {
             for (var k = 0; k < ngi; k++) {
                 this.arrayGioco[i][k] = "-";
@@ -97,8 +97,7 @@ class Gioco {
     async InData() {
         await this.parole.readFile();
         this.parole.arrayParole = this.parole.getArray();
-        console.log("Dammi x "+this.difficolta.grandezzaMatriceX);
-        console.log("Dammi y "+this.difficolta.grandezzaMatriceY);
+
         var i = 0;
         while(i<this.difficolta.paroleDaTrovare){
             var dir = Math.floor(Math.random() * this.parole.arrayParole.length);
@@ -107,7 +106,6 @@ class Gioco {
                 continue;
             }
             if(this.controllaParolaInGrid(genPar)){
-                console.log(i+" "+genPar);
                 i++;
             }
         }
@@ -117,9 +115,10 @@ class Gioco {
 
     controllaParolaInGrid(parola){
         var a = this.getPositionParola(parola).split(" ");
-        console.log(a);
+        
         if(this.controlloArray(parola,a[0],a[1],a[2])){
             this.inserisciDati(parola,a[0],a[1],a[2]);
+            console.log(parola + " " + a[0] + " " + a[1] + " " +a[2]);
             console.log(this.arrayGioco);
             console.log(this.arrayPosizioni);
             return true;
@@ -130,40 +129,40 @@ class Gioco {
     }
 
     inserisciDati(parola,x,y,direzione){
-        console.log(parola);
         if (direzione == "r") {
             var spo = 0;
             var sss = parseInt(y);
-            for(var i = y;i<parola.length + sss;i++){
-                console.log(spo);
-                this.arrayGioco[x][i] = parola[spo];
-                this.arrayPosizioni[x][i] = "r";
+            for(var i = sss;i<parola.length + sss;i++){
+                this.arrayGioco[i][x] = parola[spo];
+                this.arrayPosizioni[i][x] += "r ";
                 spo++;
             }
         } else if (direzione == "l") {
             var spo = 0;
-            for(var i = x;i<(this.difficolta.grandezzaMatriceX-lparola);i--){
-                this.arrayGioco[i][y] = parola[spo];
-                this.arrayPosizioni[i][y] = "l";
+            var sss = parseInt(y);
+            for(var i = sss;i>sss-parola.length;i--){
+                this.arrayGioco[i][x] = parola[spo];
+                this.arrayPosizioni[i][x] += "l ";
                 spo++;
-                
             }
         } else if (direzione == "s") {
             
             var spo = 0;
             var sss = parseInt(x);
-            for(var i = x;i<parola.length+sss;i++){
-                this.arrayGioco[i][y] = parola[spo];
-                this.arrayPosizioni[i][y] = "s";
+            for(var i = sss;i<parola.length+sss;i++){
+                this.arrayGioco[y][i] = parola[spo];
+                this.arrayPosizioni[y][i] += "s ";
                 spo++;
                 
             }
         } else if (direzione == "a") {
             var spo = 0;
-            for(var i = y;i<(this.difficolta.grandezzaMatriceY) - lparola;i++){
-                this.arrayGioco[x][i] = parola[spo];
-                this.arrayPosizioni[x][i] = "a";
+            var sss = parseInt(x);
+            for(var i = sss;i>sss-parola.length;i--){
+                this.arrayGioco[y][i] = parola[spo];
+                this.arrayPosizioni[y][i] += "a ";
                 spo++;
+                
             }
         }
     }
@@ -172,56 +171,86 @@ class Gioco {
         if (direzione == "r") {
             var spo = 0;
             var isOk = true;
-            console.log("a "+ parola.length);
-            console.log(parola.length + y);
             var sss = parseInt(y);
-            for(var i = y;i<parola.length+sss;i++){
-                console.log("eseg: "+parola[spo] + " " + this.arrayGioco[x][i]);
-                if((this.arrayGioco[i][y] != "-" || this.arrayGioco[i][y] != parola[spo] || this.arrayPosizioni[i][y] == "r")){
+            for(var i = sss;i<parola.length+sss;i++){
+                console.log(this.arrayGioco[i][x] + " "+ parola[spo]);
+                if(this.arrayGioco[i][x] == "-"){
+                    spo++;
+                    continue;
+                }
+                
+                if(this.arrayGioco[i][x] != parola[spo]){
+                    isOk = false;
+                }
+                if(this.arrayPosizioni[i][x].includes("r")){
                     isOk = false;
                 }
                 spo++;
             }
-            console.log(isOk);
+            
             return isOk;
         } else if (direzione == "l") {
-            /**
+            
             var spo = 0;
-            for(var i = x;i<this.difficolta.grandezzaMatriceX-lparola;i--){
-                if((this.arrayGioco[x][i] != "-" && this.arrayGioco[x][i] != parola[spo]) || (this.arrayPosizioni[x][i] == "l")){
-                    return false;
+            var isOk = true;
+            var sss = parseInt(y);
+            for(var i = sss;i>sss-parola.length;i--){
+                console.log(this.arrayGioco[i][x] + " "+ parola[spo]);
+                if(this.arrayGioco[i][x] == "-"){
+                    spo++;
+                    continue;
+                }
+                if(this.arrayGioco[i][x] != parola[spo]){
+                    isOk = false;
+                }
+                if(this.arrayPosizioni[i][x].includes("l")){
+                    isOk = false;
                 }
                 spo++;
             }
-            return true;
-            */
-            return false;
+            
+            return isOk;
+
         } else if (direzione == "s") {
             var isOk = true;
             var spo = 0;
             var sss = parseInt(x);
-            for(var i = x;i<parola.length + sss;i++){
-                console.log("eseg: "+parola[spo] + " " + this.arrayGioco[x][i]);
-                if((this.arrayGioco[x][i] != "-" || this.arrayGioco[x][i] != parola[spo]) || this.arrayPosizioni[x][i] == "s"){
-                    console.log("ritfalse");
+            for(var i = sss;i<parola.length + sss;i++){
+                console.log(this.arrayGioco[y][i] + " "+ parola[spo]);
+                if(this.arrayGioco[y][i] == "-" ){
+                    spo++;
+                    continue;
+                }
+                if(this.arrayGioco[y][i] != parola[spo]){
                     isOk = false;
                 }
-                
-                spo++;
-            }
-            console.log(isOk);
-            return isOk;
-        } else if (direzione == "a") {
-            /**var spo = 0;
-            for(var i = y;i<this.difficolta.grandezzaMatriceY - lparola;i++){
-                if((this.arrayGioco[i][y] != "-" && this.arrayGioco[i][y] != parola[spo]) || (this.arrayPosizioni[i][y] == "a")){
-                    return false;
+                if(this.arrayPosizioni[y][i].includes("s")){
+                    isOk = false;
                 }
                 spo++;
             }
-            return true;
-            */
-           return false;
+            
+            return isOk;
+        } else if (direzione == "a") {
+            var isOk = true;
+            var spo = 0;
+            var sss = parseInt(x);
+            for(var i = sss;i>sss-parola.length;i--){
+                console.log(this.arrayGioco[y][i] + " "+ parola[spo]);
+                if(this.arrayGioco[y][i] == "-" ){
+                    spo++;
+                    continue;
+                }
+                if(this.arrayGioco[y][i] != parola[spo]){
+                    isOk = false;
+                }
+                if(this.arrayPosizioni[y][i].includes("a")){
+                    isOk = false;
+                }
+                spo++;
+            }
+            
+            return isOk;
         } else if (direzione == "sr") {
             return false;
         } else if (direzione == "sl") {
@@ -237,11 +266,11 @@ class Gioco {
         var dir = Math.floor(Math.random() * 8);
         switch (dir) {
             case 0:
-                return "s"; //sotto
+                return "s"; //destra
             case 1:
                 return "a"; //sopra
             case 2:
-                return "r"; //destra
+                return "r"; //sotto
             case 3:
                 return "l"; //sinsitra
             case 4:
@@ -266,20 +295,20 @@ class Gioco {
             posizioneX = Math.floor(Math.random() * this.difficolta.grandezzaMatriceX);
             posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola));
         } else if (direzione == "l") {
-            posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola)) + lunghezzaParola;
-            posizioneY = Math.floor(Math.random() * this.difficolta.grandezzaMatriceY);
+            posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola)) + lunghezzaParola -1 ;
+            posizioneX = Math.floor(Math.random() * this.difficolta.grandezzaMatriceY);
         } else if (direzione == "s") {
             posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola));
             posizioneY = Math.floor(Math.random() * this.difficolta.grandezzaMatriceY);
             
         } else if (direzione == "a") {
-            posizioneX = Math.floor(Math.random() * this.difficolta.grandezzaMatriceX);
-            posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola)) + lunghezzaParola;
+            posizioneY = Math.floor(Math.random() * this.difficolta.grandezzaMatriceX);
+            posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola)) + lunghezzaParola-1;
         } else if (direzione == "sr") {
             posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola));
             posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola)) + posizioneX;
         } else if (direzione == "sl") {
-            posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola)) + lunghezzaParola;
+            posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola)) + lunghezzaParola-1;
             posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola)) + posizioneX;
         } else if (direzione == "ar") {
             posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola));
@@ -288,7 +317,6 @@ class Gioco {
             posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola)) + lunghezzaParola;
             posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola)) + (this.difficolta.grandezzaMatriceY - posizioneX);
         }
-        console.log("lParola: "+lunghezzaParola+" dir: "+direzione+" X: "+posizioneX+" Y: "+posizioneY);
         return posizioneX + " " + posizioneY + " " + direzione;
 
 
@@ -305,7 +333,7 @@ class Gioco {
             tabelle += "</tr>"
         }
         tabelle += "</table>"
-        console.log(tabelle);
+        
         document.getElementById("result").innerHTML += tabelle;
     }
 
