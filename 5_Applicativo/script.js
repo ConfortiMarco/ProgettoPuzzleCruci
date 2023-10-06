@@ -25,13 +25,13 @@ class Parole {
 
 
     setFile() {
-        try {
-            var x = document.getElementById("files").files[0].name;
-            
-            this.filePath = x;
-        } catch {
+        if(document.getElementById("files").files[0] == undefined){
             this.filePath = "280000_parole_italiane.txt";
+        }else{
+            var x = document.getElementById("files").files[0].name;
+            this.filePath = x;
         }
+        console.log(this.filePath);
 
     }
 
@@ -73,8 +73,12 @@ class Gioco {
         this.arrayGioco = new Array(this.difficolta.grandezzaMatriceX);
         this.parole = new Parole();
         this.Font = new Font();
+        this.arrayListaParole = new Array();
+        this.arrayControlloNumeri = new Array();
+        this.parole.setFile();
         this.InData();
         this.creaArray();
+        
     }
 
     creaArray() {
@@ -99,15 +103,20 @@ class Gioco {
         var i = 0;
         while(i<this.difficolta.paroleDaTrovare){
             var dir = Math.floor(Math.random() * this.parole.arrayParole.length);
+            if(this.arrayControlloNumeri.includes(dir)){
+                continue;
+            }
             var genPar = this.parole.arrayParole[dir];
             if(genPar.length<2 || genPar.length>this.difficolta.grandezzaMatriceX-1){
                 continue;
             }
             if(this.controllaParolaInGrid(genPar)){
+                this.arrayControlloNumeri.push(dir);
                 i++;
             }
         }
         this.stampaTabella();
+        this.stampaLista();
     }
 
 
@@ -116,7 +125,9 @@ class Gioco {
         
         if(this.controlloArray(parola,a[0],a[1],a[2])){
             this.inserisciDati(parola,a[0],a[1],a[2]);
+            this.arrayListaParole.push(parola);
             console.log(parola + " " + a[0] + " " + a[1] + " " +a[2]);
+            console.log(this.arrayPosizioni);
             return true;
         }else{
             return false;
@@ -175,7 +186,7 @@ class Gioco {
             var ssy = parseInt(y);
             for(var i = 0;i<parola.length;i++){
                 this.arrayGioco[ssx-i][ssy-i] = parola[spo];
-                this.arrayPosizioni[ssx-i][ssy-i] += "sr ";
+                this.arrayPosizioni[ssx-i][ssy-i] += "sl ";
                 spo++;
             }
         }else if (direzione=="ar"){
@@ -184,7 +195,7 @@ class Gioco {
             var ssy = parseInt(y);
             for(var i = 0;i<parola.length;i++){
                 this.arrayGioco[ssx-i][ssy+i] = parola[spo];
-                this.arrayPosizioni[ssx-i][ssy+i] += "sr ";
+                this.arrayPosizioni[ssx-i][ssy+i] += "ar ";
                 spo++;
             }
         }else if (direzione=="al"){
@@ -193,7 +204,7 @@ class Gioco {
             var ssy = parseInt(y);
             for(var i = 0;i<parola.length;i++){
                 this.arrayGioco[ssx+i][ssy-i] = parola[spo];
-                this.arrayPosizioni[ssx+i][ssy-i] += "sr ";
+                this.arrayPosizioni[ssx+i][ssy-i] += "al ";
                 spo++;
             }
         }
@@ -329,7 +340,7 @@ class Gioco {
                 if(this.arrayGioco[ssx+i][ssy-i] != parola[spo]){
                     isOk = false;
                 }
-                if(this.arrayPosizioni[ssx+i][ssy-i].includes("ar")){
+                if(this.arrayPosizioni[ssx+i][ssy-i].includes("al")){
                     isOk = false;
                 }
                 spo++;
@@ -411,6 +422,16 @@ class Gioco {
         tabelle += "</table>"
         
         document.getElementById("result").innerHTML += tabelle;
+    }
+
+    stampaLista(){
+        document.getElementById("listaParole").innerHTML = "";
+        var stringaDaStampare = "";
+        this.arrayListaParole.sort();
+        for(var i=0;i<this.arrayListaParole.length;i++){
+            stringaDaStampare += this.arrayListaParole[i] + "<br>"
+        }
+        document.getElementById("listaParole").innerHTML = stringaDaStampare;
     }
 
 }
