@@ -21,10 +21,10 @@
             Modalita
         </div>
         <div class="contenuto destra">
-            <input type="radio" name="mod" id="" checked>Normale
+            <input type="radio" name="mod" id="modNormale" >Normale
             <br>
             <br>
-            <input type="radio" name="mod" id="">Bambini
+            <input type="radio" name="mod" id="modBambini" checked>Bambini
         </div>
         <div class="contenuto minititolo sotto">
             Difficolta
@@ -45,7 +45,8 @@
         <center>
             <input type="file" name="" id="files" accept="txt">
             <br>
-            <button onclick="vai();">Sciacci qui per generare</button>
+            <button onclick="vai();">Genera CruciPuzzle</button>
+            <button onclick="vai();">Genera Soluzione</button>
             <br>
             <div id="result">
 
@@ -53,6 +54,8 @@
             <div id="listaParole">
 
             </div>
+            <br>
+            <button onclick="txt()">ScaricaTXT</button>
         </center>
     </div>
 </body>

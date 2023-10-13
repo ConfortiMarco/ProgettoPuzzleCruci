@@ -3,6 +3,19 @@
 class Modalita {
     constructor() {
         this.modalita = "bambini";
+        this.parolaMagica = null;
+    }
+
+    setModalita(){
+        if(document.getElementById('modNormale').checked){
+            this.modalita = "normale"
+        }else if(document.getElementById('modBambini').checked){
+            this.modalita = "bambini"
+        }
+    }
+
+    setParolaMagica(parolaMagica){
+        this.parolaMagica = parolaMagica;
     }
 }
 class Difficolta {
@@ -12,7 +25,6 @@ class Difficolta {
         this.paroleDaTrovare = 10;
         this.grandezzaMatriceX = 10;
         this.grandezzaMatriceY = 10;
-        this.parolaFinaleEsiste = false;
     }
 }
 class Parole {
@@ -20,7 +32,6 @@ class Parole {
         this.filePath = "280000_parole_italiane.txt"
         this.difficolta = new Difficolta();
         this.arrayParole = new Array();
-        this.continua = false;
     }
 
 
@@ -56,9 +67,19 @@ class Parole {
             xhttp.open("GET", this.filePath);
             xhttp.send();
         });
-        
-
     }
+
+    downloadFileTXT(content) {
+        // Create a blob
+        var blob = new Blob([content], { type: 'text' });
+        var url = URL.createObjectURL(blob);
+      
+        // Create a link to download it
+        var pom = document.createElement('a');
+        pom.href = url;
+        pom.setAttribute('download', "CruciPuzzleByMarco.txt");
+        pom.click();
+      }
 
 }
 class Font {
@@ -69,6 +90,7 @@ class Font {
 class Gioco {
     constructor() {
         this.difficolta = new Difficolta();
+        this.modalita = new Modalita();
         this.arrayPosizioni = new Array(this.difficolta.grandezzaMatriceX);
         this.arrayGioco = new Array(this.difficolta.grandezzaMatriceX);
         this.parole = new Parole();
@@ -76,9 +98,14 @@ class Gioco {
         this.arrayListaParole = new Array();
         this.arrayControlloNumeri = new Array();
         this.parole.setFile();
+        this.modalita.setModalita();
         this.InData();
         this.creaArray();
         
+    }
+
+    scaricaInTXT(){
+        this.parole.downloadFileTXT(this.stampaTabella());
     }
 
     creaArray() {
@@ -96,31 +123,118 @@ class Gioco {
         }
     }
 
-    async InData() {
-        await this.parole.readFile();
-        this.parole.arrayParole = this.parole.getArray();
+    getFreeSpace(){
+        var spaziVuoti = 0;
+        for(var i = 0;i<this.arrayGioco.length;i++){
+            for(var k = 0;k<this.arrayGioco[i].length;k++){
+                if(this.arrayGioco[i][k] == "-"){
+                    spaziVuoti++;
+                }
+            }
+        }
+        return spaziVuoti;
+    }
 
-        var i = 0;
-        while(i<this.difficolta.paroleDaTrovare){
+    getParolaMagica(len){
+        this.parole.arrayParole = this.parole.getArray();
+        var contWhile = true;
+        while(contWhile){
             var dir = Math.floor(Math.random() * this.parole.arrayParole.length);
             if(this.arrayControlloNumeri.includes(dir)){
                 continue;
             }
             var genPar = this.parole.arrayParole[dir];
-            if(genPar.length<2 || genPar.length>this.difficolta.grandezzaMatriceX-1){
-                continue;
-            }
-            if(this.controllaParolaInGrid(genPar)){
-                this.arrayControlloNumeri.push(dir);
-                i++;
+            genPar = genPar.toUpperCase();
+            if(genPar.length == len){
+                contWhile = false;
+                this.modalita.setParolaMagica(genPar);
             }
         }
-        this.stampaTabella();
-        this.stampaLista();
+        
+    }
+
+    inserisciParolaMagica(){
+        var posizioneLettera = 0;
+        var parola = this.modalita.parolaMagica;
+        for(var i = 0;i<this.arrayGioco.length;i++){
+            for(var k = 0;k<this.arrayGioco[i].length;k++){
+                if(this.arrayGioco[i][k] == "-"){
+                    this.arrayGioco[i][k] = parola[posizioneLettera];
+                    posizioneLettera++;
+                }
+            }
+        }
+    }
+
+    canGetParolaMagica(){
+        var spaziVuoti = this.getFreeSpace();
+        if(spaziVuoti>this.difficolta.grandezzaMatriceX){
+            return true;
+        }
+        if(spaziVuoti<=2){
+            return true;
+        }
+        if(spaziVuoti>2 && spaziVuoti<=this.difficolta.grandezzaMatriceX-1){
+            this.getParolaMagica(spaziVuoti);
+            return false;
+        }
+    }
+
+    async InData() {
+        await this.parole.readFile();
+        this.parole.arrayParole = this.parole.getArray();
+
+        var i = 0;
+        if(this.modalita.modalita == "normale"){
+            while(this.canGetParolaMagica()){
+                var dir = Math.floor(Math.random() * this.parole.arrayParole.length);
+                if(this.arrayControlloNumeri.includes(dir)){
+                    continue;
+                }
+                var genPar = this.parole.arrayParole[dir];
+                if(genPar.length<=2 || genPar.length>this.difficolta.grandezzaMatriceX-1){
+                    continue;
+                }
+                if(this.controllaParolaInGrid(genPar)){
+                    this.arrayControlloNumeri.push(dir);
+                    i++;
+                }
+            }
+            if(this.modalita.parolaMagica == null){
+                vai();
+            }else{
+                this.inserisciParolaMagica();
+                this.stampaTabella();
+                this.stampaLista();
+            }
+            
+            
+        }else if(this.modalita.modalita == "bambini"){
+            while(i<this.difficolta.paroleDaTrovare){
+                var dir = Math.floor(Math.random() * this.parole.arrayParole.length);
+                if(this.arrayControlloNumeri.includes(dir)){
+                    continue;
+                }
+                var genPar = this.parole.arrayParole[dir];
+                if(genPar.length<=2 || genPar.length>this.difficolta.grandezzaMatriceX-1){
+                    continue;
+                }
+                if(this.controllaParolaInGrid(genPar)){
+                    this.arrayControlloNumeri.push(dir);
+                    i++;
+                }
+                
+            }
+            this.stampaTabella();
+            this.stampaLista();
+        }
+        
+        
     }
 
 
     controllaParolaInGrid(parola){
+        parola = parola.toUpperCase();
         var a = this.getPositionParola(parola).split(" ");
         
         if(this.controlloArray(parola,a[0],a[1],a[2])){
@@ -422,6 +536,7 @@ class Gioco {
         tabelle += "</table>"
         
         document.getElementById("result").innerHTML += tabelle;
+        return tabelle;
     }
 
     stampaLista(){
@@ -429,15 +544,23 @@ class Gioco {
         var stringaDaStampare = "";
         this.arrayListaParole.sort();
         for(var i=0;i<this.arrayListaParole.length;i++){
-            stringaDaStampare += this.arrayListaParole[i] + "<br>"
+            stringaDaStampare += this.arrayListaParole[i] + ", ";
         }
         document.getElementById("listaParole").innerHTML = stringaDaStampare;
     }
 
+    
+
 }
+
+
+
 var a;
 var b;
-async function vai() {
-    b = new Gioco();
+function vai() {
+    b = new Gioco();    
+}
+function txt(){
+    b.scaricaInTXT();
 }
 
