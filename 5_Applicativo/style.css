@@ -39,7 +39,7 @@
 }
 
 th,
-td{
+td {
     width: 500px;
     height: 50px;
 }
@@ -165,5 +165,16 @@ table {
 
     .col-12 {
         width: 100%;
+    }
+}
+
+@media print {
+
+    #result {
+        display: inline;
+    }
+
+    .vertical, .border-all, .contenuto, .minititolo, #files, #GenCru, #GenSol, #txt, #stampa, #html {
+        display: none !important; 
     }
 }

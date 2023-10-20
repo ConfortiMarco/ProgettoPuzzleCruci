@@ -81,6 +81,18 @@ class Parole {
         pom.click();
       }
 
+      downloadFileHTML(content) {
+        // Create a blob
+        var blob = new Blob([content], { type: 'text' });
+        var url = URL.createObjectURL(blob);
+      
+        // Create a link to download it
+        var pom = document.createElement('a');
+        pom.href = url;
+        pom.setAttribute('download', "CruciPuzzleByMarco.html");
+        pom.click();
+      }
+
 }
 class Font {
     constructor() {
@@ -93,25 +105,32 @@ class Gioco {
         this.modalita = new Modalita();
         this.arrayPosizioni = new Array(this.difficolta.grandezzaMatriceX);
         this.arrayGioco = new Array(this.difficolta.grandezzaMatriceX);
+        this.arraySoluzione = new Array(this.difficolta.grandezzaMatriceX);
         this.parole = new Parole();
         this.Font = new Font();
         this.arrayListaParole = new Array();
         this.arrayControlloNumeri = new Array();
+        this.arrayColori = new Array();
         this.parole.setFile();
         this.modalita.setModalita();
+        this.numeroSoluzione = 0;
         this.InData();
         this.creaArray();
         
     }
 
     scaricaInTXT(){
-        this.parole.downloadFileTXT(this.stampaTabella());
+        this.parole.downloadFileTXT(this.stampaTabellaTXT());
+    }
+    scaricaInHTML(){
+        this.parole.downloadFileHTML(this.stampaTabellaHTML());
     }
 
     creaArray() {
         for (var i = 0; i < this.arrayPosizioni.length; i++) {
             this.arrayPosizioni[i] = new Array(this.difficolta.grandezzaMatriceY);
             this.arrayGioco[i] = new Array(this.difficolta.grandezzaMatriceY);
+            this.arraySoluzione[i] = new Array(this.difficolta.grandezzaMatriceY);
         }
         var ngi = this.arrayGioco.length;
         
@@ -119,6 +138,7 @@ class Gioco {
             for (var k = 0; k < ngi; k++) {
                 this.arrayGioco[i][k] = "-";
                 this.arrayPosizioni[i][k] = "-";
+                this.arraySoluzione[i][k] = "-";
             }
         }
     }
@@ -256,6 +276,7 @@ class Gioco {
             for(var i = sss;i<parola.length + sss;i++){
                 this.arrayGioco[i][y] = parola[spo];
                 this.arrayPosizioni[i][y] += "r ";
+                this.arraySoluzione[i][y] += "/"+this.numeroSoluzione;
                 spo++;
             }
         } else if (direzione == "l") {
@@ -264,6 +285,7 @@ class Gioco {
             for(var i = sss;i>sss-parola.length;i--){
                 this.arrayGioco[i][y] = parola[spo];
                 this.arrayPosizioni[i][y] += "l ";
+                this.arraySoluzione[i][y] += "/"+this.numeroSoluzione;
                 spo++;
             }
         } else if (direzione == "s") {
@@ -273,6 +295,7 @@ class Gioco {
             for(var i = sss;i<parola.length+sss;i++){
                 this.arrayGioco[x][i] = parola[spo];
                 this.arrayPosizioni[x][i] += "s ";
+                this.arraySoluzione[x][i] += "/"+this.numeroSoluzione;
                 spo++;
                 
             }
@@ -282,6 +305,7 @@ class Gioco {
             for(var i = sss;i>sss-parola.length;i--){
                 this.arrayGioco[x][i] = parola[spo];
                 this.arrayPosizioni[x][i] += "a ";
+                this.arraySoluzione[x][i] += "/"+this.numeroSoluzione;
                 spo++;
                 
             }
@@ -292,6 +316,7 @@ class Gioco {
             for(var i = 0;i<parola.length;i++){
                 this.arrayGioco[ssx+i][ssy+i] = parola[spo];
                 this.arrayPosizioni[ssx+i][ssy+i] += "sr ";
+                this.arraySoluzione[ssx+i][ssy+i] += "/"+this.numeroSoluzione;
                 spo++;
             }
         }else if (direzione=="sl"){
@@ -301,6 +326,7 @@ class Gioco {
             for(var i = 0;i<parola.length;i++){
                 this.arrayGioco[ssx-i][ssy-i] = parola[spo];
                 this.arrayPosizioni[ssx-i][ssy-i] += "sl ";
+                this.arraySoluzione[ssx-i][ssy-i] += "/"+this.numeroSoluzione;
                 spo++;
             }
         }else if (direzione=="ar"){
@@ -310,6 +336,7 @@ class Gioco {
             for(var i = 0;i<parola.length;i++){
                 this.arrayGioco[ssx-i][ssy+i] = parola[spo];
                 this.arrayPosizioni[ssx-i][ssy+i] += "ar ";
+                this.arraySoluzione[ssx-i][ssy+i] += "/"+this.numeroSoluzione;
                 spo++;
             }
         }else if (direzione=="al"){
@@ -319,14 +346,58 @@ class Gioco {
             for(var i = 0;i<parola.length;i++){
                 this.arrayGioco[ssx+i][ssy-i] = parola[spo];
                 this.arrayPosizioni[ssx+i][ssy-i] += "al ";
+                this.arraySoluzione[ssx+i][ssy-i] += "/"+this.numeroSoluzione;
                 spo++;
             }
         }
+        this.numeroSoluzione++;
     }
 
-    controlloArray(parola,x,y,direzione){
+    /**
+    controlloX(x, y, direzione, length,parola) {
         var isOk = true;
         var spo = 0;
+        var sss = parseInt(x);
+        for (var i = sss; i < length; i++) {
+            if (this.arrayGioco[i][y] == "-") {
+                spo++;
+                continue;
+            }
+
+            if (this.arrayGioco[i][y] != parola[spo]) {
+                isOk = false;
+            }
+            if (this.arrayPosizioni[i][y].includes(direzione)) {
+                isOk = false;
+            }
+            spo++;
+        }
+        return isOk;
+    }
+
+    controlloY(x, y, direzione, length,parola) {
+        var isOk = true;
+        var spo = 0;
+        var sss = parseInt(y);
+        for (var i = sss; i < parseInt(length); i++) {
+            if (this.arrayGioco[x][i] == "-") {
+                spo++;
+                continue;
+            }
+            if (this.arrayGioco[x][i] != parola[spo]) {
+                isOk = false;
+            }
+            if (this.arrayPosizioni[x][i].includes(direzione)) {
+                isOk = false;
+            }
+            spo++;
+        }
+        return isOk;
+    }*/
+
+    controlloArray(parola, x, y, direzione) {
+        var spo = 0;
+        var isOk = true;
         if (direzione == "r") {
             var sss = parseInt(x);
             for(var i = sss;i<parola.length+sss;i++){
@@ -538,6 +609,51 @@ class Gioco {
         document.getElementById("result").innerHTML += tabelle;
         return tabelle;
     }
+    stampaTabellaTXT(){
+        var tabelle = "";
+        for (var i = 0; i < this.arrayGioco.length; i++) {
+            for (var k = 0; k < this.arrayGioco[i].length; k++) {
+                tabelle += this.arrayGioco[i][k] + " ";
+            }
+            tabelle += "\n";
+        }
+        for(var i = 0; i<this.arrayListaParole.length;i+=2){
+            if(this.arrayListaParole[i+1] == undefined){
+                tabelle += this.arrayListaParole[i] + "\n";
+            }else{
+                tabelle += this.arrayListaParole[i] + "\t" + this.arrayListaParole[i+1] + "\n";
+            }
+            
+        }
+        if(this.modalita.modalita=="normale"){
+            tabelle += "\nParola Nascosta: _____________________";
+        }
+        return tabelle;
+    }
+    stampaTabellaHTML(){
+        var tabelle = "<DOCTYPE HTML><html><head><style>th,td{width: 500px;height: 50px;}table {border: 1px solid black;border-collapse: collapse;text-align: center;width: 500px;height: 50px;}</style></head><body><table>";
+        for (var i = 0; i < this.arrayGioco.length; i++) {
+            tabelle += "<tr>"
+            for (var k = 0; k < this.arrayGioco[i].length; k++) {
+                tabelle += "<td>"+this.arrayGioco[i][k] + "</td>";
+            }
+            tabelle += "</td>";
+        }
+        tabelle += "</table>";
+        for(var i = 0; i<this.arrayListaParole.length;i+=2){
+            if(this.arrayListaParole[i+1] == undefined){
+                tabelle += this.arrayListaParole[i] + "<br>";
+            }else{
+                tabelle += this.arrayListaParole[i] + "\t" + this.arrayListaParole[i+1] + "<br>";
+            }
+            
+        }
+        if(this.modalita.modalita=="normale"){
+            tabelle += "<br>Parola Nascosta: _____________________";
+        }
+        tabelle += "</body>";
+        return tabelle;
+    }
 
     stampaLista(){
         document.getElementById("listaParole").innerHTML = "";
@@ -548,8 +664,54 @@ class Gioco {
         }
         document.getElementById("listaParole").innerHTML = stringaDaStampare;
     }
-
     
+    stampaSoluzione(){
+        this.genColor();
+        console.log(this.arrayColori.length);
+        var solu = "<table>";
+        for(var i = 0;i<this.arraySoluzione.length;i++){
+            solu += "<tr>";
+            for(var k = 0;k<this.arraySoluzione[i].length;k++){
+                var ora = this.arraySoluzione[i][k];
+                var arrayNumeriSoluzione = ora.split("/");
+                var mediaColor = 0;
+                for(var f = 1;f<arrayNumeriSoluzione.length;f++){
+                    mediaColor += parseInt(this.arrayColori[arrayNumeriSoluzione[f]]);
+                }
+                mediaColor /= (arrayNumeriSoluzione-1);
+                solu += "<td style='background-color: rgb("+mediaColor+")'>"+ora+"</td>";
+            }
+            solu += "</tr>";
+        }
+        solu += "</table>";
+        document.getElementById('solu').innerHTML = solu;
+    }
+
+    isDifferentColor(r,g,b){
+        var color = r+""+g+""+b;
+        if(this.arrayColori.includes(color)){
+            return false;
+        }else{
+            this.arrayColori.push(color);
+            return true;
+        }
+    }
+
+    genColor(){
+        for(var i = 0;i<this.numeroSoluzione;i++){
+            var isPossible = true;
+            var r, g, b;
+            while(isPossible){
+                r = Math.floor(Math.random() * 256);
+                g = Math.floor(Math.random() * 256);
+                b = Math.floor(Math.random() * 256);
+                if(this.isDifferentColor(r,g,b)){
+                    isPossible = false;
+                }
+            }
+        }
+        
+    }
 
 }
 
@@ -558,9 +720,20 @@ class Gioco {
 var a;
 var b;
 function vai() {
-    b = new Gioco();    
+    b = new Gioco();
+    document.getElementById("txt").style.display = "inline";
+    document.getElementById("html").style.display = "inline";    
+    document.getElementById("stampa").style.display = "inline";    
 }
 function txt(){
     b.scaricaInTXT();
 }
-
+function html(){
+    b.scaricaInHTML();
+}
+function stampa(){
+    b.stampante();
+}
+function stampaSoluzione(){
+    b.stampaSoluzione();
+}
