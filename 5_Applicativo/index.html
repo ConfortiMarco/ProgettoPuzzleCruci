@@ -7,16 +7,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Progetto</title>
     <script src="script.js"></script>
+    <script src="Gioco.js"></script>
+    <script src="Parole.js"></script>
+    <script src="Font.js"></script>
+    <script src="Modalita.js"></script>
+    <script src="Difficolta.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div class="col-6 title">
+    <div class="title">
         Puzzle Cruci
     </div>
     <div style="display: none;" id="invisible"></div>
-    <div class="vertical"></div>
-    <div class="col-5 border-all">
+    <div class="border-all">
         <div class="contenuto minititolo ">
             Modalita
         </div>
@@ -26,24 +30,45 @@
             <br>
             <input type="radio" name="mod" id="modBambini" checked>Bambini
         </div>
-        <div class="contenuto minititolo sotto">
+    </div>
+    <div class="border-all">
+        <div class="contenuto minititolo">
             Difficolta
         </div>
-        <div class="destra sotto">
-            <input type="radio" name="Du" id="" checked>Facile
+        <div class="destra">
+            <br>
+            <input type="radio" name="Du" id="difFac" checked>Facile
             <br>
             <br>
-            <input type="radio" name="Du" id="">Medio
+            <input type="radio" name="Du" id="difMed">Medio
             <br>
             <br>
-            <input type="radio" name="Du" id="">Difficile
+            <input type="radio" name="Du" id="difDif">Difficile
         </div>
-        
-
     </div>
-    <div class="col-6">
-        <center>
+    <div class="border-all">
+        <div class="contenuto minititolo">
+            Font
+        </div>
+        <div class="destra contenuto">
+            <br>
+            <input type="font" name="Du" id="difFac" checked>
+        </div>
+    </div>
+    <div class="border-all">
+        <div class="contenuto minititolo">
+            File con parole personalizzate
+        </div>
+        <div class="destra contenuto">
+            <br>
             <input type="file" name="" id="files" accept="txt">
+        </div>
+    </div>
+    <div>
+        <br>
+        <br>
+        <center>
+            
             <br>
             <button id="GenCru" onclick="vai();">Genera CruciPuzzle</button>
             <button id="GenSol" onclick="stampaSoluzione();">Genera Soluzione</button>
@@ -51,10 +76,15 @@
             <div id="result">
 
             </div>
+            <div id="listaParole">
+
+            </div>
+            <br>
+            <br>
             <div id="solu">
 
             </div>
-            <div id="listaParole">
+            <div id="listaParole2" style="display: none;">
 
             </div>
             <br>

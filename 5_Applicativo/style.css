@@ -40,16 +40,15 @@
 
 th,
 td {
-    width: 500px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
 }
 
 table {
     border: 1px solid black;
     border-collapse: collapse;
     text-align: center;
-    width: 500px;
-    height: 50px;
+    height: auto;
 }
 
 
@@ -176,5 +175,9 @@ table {
 
     .vertical, .border-all, .contenuto, .minititolo, #files, #GenCru, #GenSol, #txt, #stampa, #html {
         display: none !important; 
+    }
+
+    #solu{
+        margin-top: 370px;
     }
 }
