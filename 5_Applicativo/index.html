@@ -6,16 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Progetto</title>
-    <script src="script.js"></script>
-    <script src="Gioco.js"></script>
-    <script src="Parole.js"></script>
-    <script src="Font.js"></script>
-    <script src="Modalita.js"></script>
-    <script src="Difficolta.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <script src="Javascript/script.js"></script>
+    <script src="Javascript/Gioco.js"></script>
+    <script src="Javascript/Parole.js"></script>
+    <script src="Javascript/Font.js"></script>
+    <script src="Javascript/Modalita.js"></script>
+    <script src="Javascript/Difficolta.js"></script>
+    <link rel="stylesheet" href="CSS/style.css">
 </head>
 
-<body>
+<body onload="onStart()">
     <div class="title">
         Puzzle Cruci
     </div>
@@ -52,7 +52,7 @@
         </div>
         <div class="destra contenuto">
             <br>
-            <input type="font" name="Du" id="difFac" checked>
+            <div id="font-space"></div>
         </div>
     </div>
     <div class="border-all">
@@ -61,7 +61,7 @@
         </div>
         <div class="destra contenuto">
             <br>
-            <input type="file" name="" id="files" accept="txt">
+            <input type="file" name="" id="files" accept=".txt">
         </div>
     </div>
     <div>
@@ -73,20 +73,26 @@
             <button id="GenCru" onclick="vai();">Genera CruciPuzzle</button>
             <button id="GenSol" onclick="stampaSoluzione();">Genera Soluzione</button>
             <br>
+            <br>
             <div id="result">
 
             </div>
+            <br>
             <div id="listaParole">
 
             </div>
             <br>
             <br>
+            <br>
             <div id="solu">
 
             </div>
+            <br>
             <div id="listaParole2" style="display: none;">
 
             </div>
+            <br>
+            <br>
             <br>
             <button id="txt" style="display: none;" onclick="txt()">ScaricaTXT</button>
             <button id="html" style="display: none;" onclick="html()">ScaricaHTML</button>

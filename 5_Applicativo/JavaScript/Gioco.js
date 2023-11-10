@@ -3,19 +3,21 @@ class Gioco {
         this.difficolta = new Difficolta();
         this.modalita = new Modalita();
         this.parole = new Parole();
-        this.Font = new Font();
+        this.font = new Font();
         this.arrayListaParole = new Array();
         this.arrayControlloNumeri = new Array();
         this.arrayColori = new Array();
         this.parole.setFile();
         this.modalita.setModalita();
         this.difficolta.setDifficolta();
+        this.font.setFont();
         this.arrayPosizioni = new Array(this.difficolta.grandezzaMatriceX);
         this.arrayGioco = new Array(this.difficolta.grandezzaMatriceX);
         this.arraySoluzione = new Array(this.difficolta.grandezzaMatriceX);
         this.numeroSoluzione = 0;
         this.InData();
         this.creaArray();
+        
 
     }
 
@@ -65,6 +67,20 @@ class Gioco {
             }
             var genPar = this.parole.arrayParole[dir];
             genPar = genPar.toUpperCase();
+            genPar = genPar.replaceAll(" ", "");
+            genPar = genPar.replaceAll("è", "e");
+            genPar = genPar.replaceAll("é", "e");
+            genPar = genPar.replaceAll("à", "a");
+            genPar = genPar.replaceAll("á", "a");
+            genPar = genPar.replaceAll("ì", "i");
+            genPar = genPar.replaceAll("í", "i");
+            genPar = genPar.replaceAll("ò", "o");
+            genPar = genPar.replaceAll("ó", "o");
+            genPar = genPar.replaceAll("ù", "u");
+            genPar = genPar.replaceAll("ú", "u");
+            genPar = genPar.replaceAll("ä", "a");
+            genPar = genPar.replaceAll("ö", "o");
+            genPar = genPar.replaceAll("ü", "u");
             if (genPar.length == len) {
                 contWhile = false;
                 this.modalita.setParolaMagica(genPar);
@@ -149,12 +165,25 @@ class Gioco {
             this.stampaTabella();
             this.stampaLista();
         }
-
-
     }
 
 
     controllaParolaInGrid(parola) {
+        parola = parola.toLowerCase();
+        parola = parola.replaceAll(" ", "");
+        parola = parola.replaceAll("è", "e");
+        parola = parola.replaceAll("é", "e");
+        parola = parola.replaceAll("à", "a");
+        parola = parola.replaceAll("á", "a");
+        parola = parola.replaceAll("ì", "i");
+        parola = parola.replaceAll("í", "i");
+        parola = parola.replaceAll("ò", "o");
+        parola = parola.replaceAll("ó", "o");
+        parola = parola.replaceAll("ù", "u");
+        parola = parola.replaceAll("ú", "u");
+        parola = parola.replaceAll("ä", "a");
+        parola = parola.replaceAll("ö", "o");
+        parola = parola.replaceAll("ü", "u");
         parola = parola.toUpperCase();
         var a = this.getPositionParola(parola).split(" ");
 
@@ -168,11 +197,11 @@ class Gioco {
 
     }
 
-    riempiSpazi(){
+    riempiSpazi() {
         var alfabeto = "qwertzuioplkjhgfdsayxcvbnm".toUpperCase();
-        for(var i = 0;i<this.arrayGioco.length;i++){
-            for(var j = 0;j<this.arrayGioco[i].length;j++){
-                if(this.arrayGioco[i][j] == "-"){
+        for (var i = 0; i < this.arrayGioco.length; i++) {
+            for (var j = 0; j < this.arrayGioco[i].length; j++) {
+                if (this.arrayGioco[i][j] == "-") {
                     var random = Math.floor(Math.random() * 26);
                     this.arrayGioco[i][j] = alfabeto[random];
                 }
@@ -180,23 +209,29 @@ class Gioco {
         }
     }
 
+    inserimentoDatiFinale(parola,x,y,spo,direzione){
+        var alfabeto = "qwertzuioplkjhgfdsayxcvbnm1234567890èéà".toUpperCase();
+        if(!alfabeto.includes(parola[spo])){
+            return;
+        }
+        this.arrayGioco[x][y] = parola[spo];
+        this.arrayPosizioni[x][y] += direzione+" ";
+        this.arraySoluzione[x][y] += "/" + this.numeroSoluzione;
+    }
+
     inserisciDati(parola, x, y, direzione) {
         if (direzione == "r") {
             var spo = 0;
             var sss = parseInt(x);
             for (var i = sss; i < parola.length + sss; i++) {
-                this.arrayGioco[i][y] = parola[spo];
-                this.arrayPosizioni[i][y] += "r ";
-                this.arraySoluzione[i][y] += "/" + this.numeroSoluzione;
+                this.inserimentoDatiFinale(parola,i,y,spo,direzione);
                 spo++;
             }
         } else if (direzione == "l") {
             var spo = 0;
             var sss = parseInt(x);
             for (var i = sss; i > sss - parola.length; i--) {
-                this.arrayGioco[i][y] = parola[spo];
-                this.arrayPosizioni[i][y] += "l ";
-                this.arraySoluzione[i][y] += "/" + this.numeroSoluzione;
+                this.inserimentoDatiFinale(parola,i,y,spo,direzione);
                 spo++;
             }
         } else if (direzione == "s") {
@@ -204,30 +239,22 @@ class Gioco {
             var spo = 0;
             var sss = parseInt(y);
             for (var i = sss; i < parola.length + sss; i++) {
-                this.arrayGioco[x][i] = parola[spo];
-                this.arrayPosizioni[x][i] += "s ";
-                this.arraySoluzione[x][i] += "/" + this.numeroSoluzione;
+                this.inserimentoDatiFinale(parola,x,i,spo,direzione);
                 spo++;
-
             }
         } else if (direzione == "a") {
             var spo = 0;
             var sss = parseInt(y);
             for (var i = sss; i > sss - parola.length; i--) {
-                this.arrayGioco[x][i] = parola[spo];
-                this.arrayPosizioni[x][i] += "a ";
-                this.arraySoluzione[x][i] += "/" + this.numeroSoluzione;
+                this.inserimentoDatiFinale(parola,x,i,spo,direzione);
                 spo++;
-
             }
         } else if (direzione == "sr") {
             var spo = 0;
             var ssx = parseInt(x);
             var ssy = parseInt(y);
             for (var i = 0; i < parola.length; i++) {
-                this.arrayGioco[ssx + i][ssy + i] = parola[spo];
-                this.arrayPosizioni[ssx + i][ssy + i] += "sr ";
-                this.arraySoluzione[ssx + i][ssy + i] += "/" + this.numeroSoluzione;
+                this.inserimentoDatiFinale(parola,parseInt(ssx+i),parseInt(ssy+i),spo,direzione);
                 spo++;
             }
         } else if (direzione == "sl") {
@@ -235,9 +262,7 @@ class Gioco {
             var ssx = parseInt(x);
             var ssy = parseInt(y);
             for (var i = 0; i < parola.length; i++) {
-                this.arrayGioco[ssx - i][ssy - i] = parola[spo];
-                this.arrayPosizioni[ssx - i][ssy - i] += "sl ";
-                this.arraySoluzione[ssx - i][ssy - i] += "/" + this.numeroSoluzione;
+                this.inserimentoDatiFinale(parola,parseInt(ssx-i),parseInt(ssy-i),spo,direzione);
                 spo++;
             }
         } else if (direzione == "ar") {
@@ -245,9 +270,7 @@ class Gioco {
             var ssx = parseInt(x);
             var ssy = parseInt(y);
             for (var i = 0; i < parola.length; i++) {
-                this.arrayGioco[ssx - i][ssy + i] = parola[spo];
-                this.arrayPosizioni[ssx - i][ssy + i] += "ar ";
-                this.arraySoluzione[ssx - i][ssy + i] += "/" + this.numeroSoluzione;
+                this.inserimentoDatiFinale(parola,parseInt(ssx-i),parseInt(ssy+i),spo,direzione);
                 spo++;
             }
         } else if (direzione == "al") {
@@ -255,56 +278,26 @@ class Gioco {
             var ssx = parseInt(x);
             var ssy = parseInt(y);
             for (var i = 0; i < parola.length; i++) {
-                this.arrayGioco[ssx + i][ssy - i] = parola[spo];
-                this.arrayPosizioni[ssx + i][ssy - i] += "al ";
-                this.arraySoluzione[ssx + i][ssy - i] += "/" + this.numeroSoluzione;
+                this.inserimentoDatiFinale(parola,parseInt(ssx+i),parseInt(ssy-i),spo,direzione);
                 spo++;
             }
         }
         this.numeroSoluzione++;
     }
 
-    /**
-    controlloX(x, y, direzione, length,parola) {
-        var isOk = true;
-        var spo = 0;
-        var sss = parseInt(x);
-        for (var i = sss; i < length; i++) {
-            if (this.arrayGioco[i][y] == "-") {
-                spo++;
-                continue;
-            }
-
-            if (this.arrayGioco[i][y] != parola[spo]) {
-                isOk = false;
-            }
-            if (this.arrayPosizioni[i][y].includes(direzione)) {
-                isOk = false;
-            }
-            spo++;
+    controlloFinale(parola,x,y,spo,direzione){
+        var alfabeto = "qwertzuioplkjhgfdsayxcvbnm1234567890èéà".toUpperCase();
+        if (this.arrayGioco[x][y] == "-" || !alfabeto.includes(parola[spo])) {
+            return true;
         }
-        return isOk;
+        if (this.arrayGioco[x][y] != parola[spo]) {
+            return false;
+        }
+        if (this.arrayPosizioni[x][y].includes(direzione)) {
+            return false;
+        }
+        return true;
     }
-
-    controlloY(x, y, direzione, length,parola) {
-        var isOk = true;
-        var spo = 0;
-        var sss = parseInt(y);
-        for (var i = sss; i < parseInt(length); i++) {
-            if (this.arrayGioco[x][i] == "-") {
-                spo++;
-                continue;
-            }
-            if (this.arrayGioco[x][i] != parola[spo]) {
-                isOk = false;
-            }
-            if (this.arrayPosizioni[x][i].includes(direzione)) {
-                isOk = false;
-            }
-            spo++;
-        }
-        return isOk;
-    }*/
 
     controlloArray(parola, x, y, direzione) {
         var spo = 0;
@@ -312,134 +305,86 @@ class Gioco {
         if (direzione == "r") {
             var sss = parseInt(x);
             for (var i = sss; i < parola.length + sss; i++) {
-                if (this.arrayGioco[i][y] == "-") {
+                if(this.controlloFinale(parola,i,y,spo,direzione)){
                     spo++;
-                    continue;
-                }
-
-                if (this.arrayGioco[i][y] != parola[spo]) {
+                }else{
+                    spo++;
                     isOk = false;
                 }
-                if (this.arrayPosizioni[i][y].includes("r")) {
-                    isOk = false;
-                }
-                spo++;
             }
             return isOk;
         } else if (direzione == "l") {
             var sss = parseInt(x);
             for (var i = sss; i > sss - parola.length; i--) {
-                if (this.arrayGioco[i][y] == "-") {
+                if(this.controlloFinale(parola,i,y,spo,direzione)){
                     spo++;
-                    continue;
-                }
-                if (this.arrayGioco[i][y] != parola[spo]) {
+                }else{
                     isOk = false;
                 }
-                if (this.arrayPosizioni[i][y].includes("l")) {
-                    isOk = false;
-                }
-                spo++;
             }
             return isOk;
         } else if (direzione == "s") {
             var sss = parseInt(y);
             for (var i = sss; i < parola.length + sss; i++) {
-                if (this.arrayGioco[x][i] == "-") {
+                if(this.controlloFinale(parola,x,i,spo,direzione)){
                     spo++;
-                    continue;
-                }
-                if (this.arrayGioco[x][i] != parola[spo]) {
+                }else{
                     isOk = false;
                 }
-                if (this.arrayPosizioni[x][i].includes("s")) {
-                    isOk = false;
-                }
-                spo++;
             }
             return isOk;
         } else if (direzione == "a") {
             var sss = parseInt(y);
             for (var i = sss; i > sss - parola.length; i--) {
-                if (this.arrayGioco[x][i] == "-") {
+                if(this.controlloFinale(parola,x,i,spo,direzione)){
                     spo++;
-                    continue;
-                }
-                if (this.arrayGioco[x][i] != parola[spo]) {
+                }else{
                     isOk = false;
                 }
-                if (this.arrayPosizioni[x][i].includes("a")) {
-                    isOk = false;
-                }
-                spo++;
             }
             return isOk;
         } else if (direzione == "sr") {
             var ssy = parseInt(y);
             var ssx = parseInt(x);
             for (var i = 0; i < parola.length; i++) {
-                if (this.arrayGioco[ssx + i][ssy + i] == "-") {
+                if(this.controlloFinale(parola,parseInt(ssx+i),parseInt(ssy+i),spo,direzione)){
                     spo++;
-                    continue;
-                }
-                if (this.arrayGioco[ssx + i][ssy + i] != parola[spo]) {
+                }else{
                     isOk = false;
                 }
-                if (this.arrayPosizioni[ssx + i][ssy + i].includes("sr")) {
-                    isOk = false;
-                }
-                spo++;
             }
             return isOk;
         } else if (direzione == "sl") {
             var ssy = parseInt(y);
             var ssx = parseInt(x);
             for (var i = 0; i < parola.length; i++) {
-                if (this.arrayGioco[ssx - i][ssy - i] == "-") {
+                if(this.controlloFinale(parola,parseInt(ssx-i),parseInt(ssy-i),spo,direzione)){
                     spo++;
-                    continue;
-                }
-                if (this.arrayGioco[ssx - i][ssy - i] != parola[spo]) {
+                }else{
                     isOk = false;
                 }
-                if (this.arrayPosizioni[ssx - i][ssy - i].includes("sl")) {
-                    isOk = false;
-                }
-                spo++;
             }
             return isOk;
         } else if (direzione == "ar") {
             var ssy = parseInt(y);
             var ssx = parseInt(x);
             for (var i = 0; i < parola.length; i++) {
-                if (this.arrayGioco[ssx - i][ssy + i] == "-") {
+                if(this.controlloFinale(parola,parseInt(ssx-i),parseInt(ssy+i),spo,direzione)){
                     spo++;
-                    continue;
-                }
-                if (this.arrayGioco[ssx - i][ssy + i] != parola[spo]) {
+                }else{
                     isOk = false;
                 }
-                if (this.arrayPosizioni[ssx - i][ssy + i].includes("ar")) {
-                    isOk = false;
-                }
-                spo++;
             }
             return isOk;
         } else if (direzione == "al") {
             var ssy = parseInt(y);
             var ssx = parseInt(x);
             for (var i = 0; i < parola.length; i++) {
-                if (this.arrayGioco[ssx + i][ssy - i] == "-") {
+                if(this.controlloFinale(parola,parseInt(ssx+i),parseInt(ssy-i),spo,direzione)){
                     spo++;
-                    continue;
-                }
-                if (this.arrayGioco[ssx + i][ssy - i] != parola[spo]) {
+                }else{
                     isOk = false;
                 }
-                if (this.arrayPosizioni[ssx + i][ssy - i].includes("al")) {
-                    isOk = false;
-                }
-                spo++;
             }
 
             return isOk;
@@ -469,7 +414,7 @@ class Gioco {
 
     }
 
-    getPositionParola(parola) { //numero parola si intende il riferimento (indice) del array.
+    getPositionParola(parola) {
         var lunghezzaParola = parola.length;
         var direzione = this.getDirezione();
 
@@ -520,6 +465,7 @@ class Gioco {
         document.getElementById("result").innerHTML += tabelle;
         return tabelle;
     }
+    
     stampaTabellaTXT() {
         var tabelle = "";
         for (var i = 0; i < this.arrayGioco.length; i++) {
@@ -627,7 +573,12 @@ class Gioco {
                     var mediaColorArrayB = mediaColorB.split("");
                     solu += "<td style='background-color: rgb(" + mediaColorArrayR[0] + mediaColorArrayR[1] + mediaColorArrayR[2] + "," + mediaColorArrayG[0] + mediaColorArrayG[1] + mediaColorArrayG[2] + "," + mediaColorArrayB[0] + mediaColorArrayB[1] + mediaColorArrayB[2] + ")'>" + lettera + "</td>";
                 } else {
-                    solu += "<td style='background-color: rgb(255,255,255)'></td>";
+                    if(this.modalita.getModalita() == "normale"){
+                        solu += "<td style='background-color: rgb(255,255,255);'><div style='border:1px solid black;border-radius: 15px 15px 15px 15px; padding:5px;'>"+this.arrayGioco[i][k]+"</div></td>";
+                    }else{
+                        solu += "<td style='background-color: rgb(255,255,255)'></td>";
+                    }
+                    
                 }
 
             }

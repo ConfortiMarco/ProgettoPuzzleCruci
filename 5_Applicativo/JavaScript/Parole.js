@@ -1,6 +1,6 @@
 class Parole {
     constructor() {
-        this.filePath = "280000_parole_italiane.txt"
+        this.filePath = "../Dizionari/280000_parole_italiane.txt"
         this.difficolta = new Difficolta();
         this.arrayParole = new Array();
     }
@@ -8,7 +8,7 @@ class Parole {
 
     setFile() {
         if (document.getElementById("files").files[0] == undefined) {
-            this.filePath = "280000_parole_italiane.txt";
+            this.filePath = "../Dizionari/280000_parole_italiane.txt";
         } else {
             var x = document.getElementById("files").files[0].name;
             this.filePath = x;
