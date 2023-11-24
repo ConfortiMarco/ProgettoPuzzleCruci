@@ -8,6 +8,7 @@ class Difficolta {
     }
 
     setDifficolta(){
+        this.modalita.setModalita();
         if(this.modalita.getModalita()=="bambini"){
             if(document.getElementById('difFac').checked){
                 this.difficolta = "facile";
@@ -28,16 +29,16 @@ class Difficolta {
         }else if(this.modalita.getModalita()=="normale"){
             if(document.getElementById('difFac').checked){
                 this.difficolta = "facile";
-                this.grandezzaMatriceX = 15;
-                this.grandezzaMatriceY = 15;
+                this.grandezzaMatriceX = 12;
+                this.grandezzaMatriceY = 12;
             }else if(document.getElementById('difMed').checked){
                 this.difficolta = "medio";
-                this.grandezzaMatriceX = 20;
-                this.grandezzaMatriceY = 20;
+                this.grandezzaMatriceX = 16;
+                this.grandezzaMatriceY = 16;
             }else if(document.getElementById('difDif').checked){
                 this.difficolta = "difficile";
-                this.grandezzaMatriceX = 25;
-                this.grandezzaMatriceY = 25;
+                this.grandezzaMatriceX = 20;
+                this.grandezzaMatriceY = 20;
             }
         }
     }

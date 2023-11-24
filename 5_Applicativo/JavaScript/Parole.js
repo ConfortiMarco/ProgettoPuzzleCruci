@@ -39,6 +39,36 @@ class Parole {
         });
     }
 
+    formatWord(genPar){
+        genPar = genPar.toUpperCase();
+        genPar = genPar.replaceAll(" ", "");
+        genPar = genPar.replaceAll("è", "e");
+        genPar = genPar.replaceAll("é", "e");
+        genPar = genPar.replaceAll("à", "a");
+        genPar = genPar.replaceAll("á", "a");
+        genPar = genPar.replaceAll("ì", "i");
+        genPar = genPar.replaceAll("í", "i");
+        genPar = genPar.replaceAll("ò", "o");
+        genPar = genPar.replaceAll("ó", "o");
+        genPar = genPar.replaceAll("ù", "u");
+        genPar = genPar.replaceAll("ú", "u");
+        genPar = genPar.replaceAll("ä", "a");
+        genPar = genPar.replaceAll("ö", "o");
+        genPar = genPar.replaceAll("ü", "u");
+        return genPar
+    }
+
+    getPossibleSoluzioni(len){
+        this.getArray();
+        var arraySoluzioni = new Array();
+        for(var i = 0;i<this.arrayParole.length;i++){
+            if(this.arrayParole[i].length == len){
+                arraySoluzioni.push(this.arrayParole[i]);
+            }
+        }
+        return arraySoluzioni;
+    }
+
     downloadFileTXT(content) {
         // Create a blob
         var blob = new Blob([content], { type: 'text' });

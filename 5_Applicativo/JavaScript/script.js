@@ -22,3 +22,7 @@ function stampa() {
 function stampaSoluzione() {
     b.stampaSoluzione();
 }
+function cambiaFont(){
+    f = new Font();
+    f.setFont();
+}

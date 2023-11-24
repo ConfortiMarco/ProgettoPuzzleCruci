@@ -25,7 +25,7 @@
             Modalita
         </div>
         <div class="contenuto destra">
-            <input type="radio" name="mod" id="modNormale" >Normale
+            <input type="radio" name="mod" id="modNormale">Normale
             <br>
             <br>
             <input type="radio" name="mod" id="modBambini" checked>Bambini
@@ -52,7 +52,7 @@
         </div>
         <div class="destra contenuto">
             <br>
-            <div id="font-space"></div>
+            <div id="font-space" onchange="cambiaFont()"></div>
         </div>
     </div>
     <div class="border-all">
@@ -68,37 +68,48 @@
         <br>
         <br>
         <center>
-            
+
             <br>
             <button id="GenCru" onclick="vai();">Genera CruciPuzzle</button>
             <button id="GenSol" onclick="stampaSoluzione();">Genera Soluzione</button>
             <br>
             <br>
+
             <div id="result">
 
             </div>
-            <br>
-            <div id="listaParole">
-
-            </div>
-            <br>
-            <br>
-            <br>
+        </center>
+    </div>
+    <div>
+        <div style="column-count:5;margin:50px;" id="listaParole"></div>
+    </div>
+    <div>
+        <center>
             <div id="solu">
 
             </div>
-            <br>
-            <div id="listaParole2" style="display: none;">
+        </center>
+        <br>
+    </div>
+    <br>
 
-            </div>
-            <br>
-            <br>
-            <br>
+    <div>
+        <div style="column-count:5;display: none;margin:50px;" id="listaParole2"></div>
+    </div>
+    <div>
+        <div id="parolaMagica" style="display: none;text-align: center;font-size: 20px;"></div>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div>
+        <center>
             <button id="txt" style="display: none;" onclick="txt()">ScaricaTXT</button>
             <button id="html" style="display: none;" onclick="html()">ScaricaHTML</button>
             <button id="stampa" style="display: none;" onclick="window.print()">Stampa</button>
         </center>
     </div>
+    
 </body>
 
 </html>
