@@ -41,7 +41,7 @@ class Gioco {
         }
     }
 
-    getFreeSpace() {
+    prendereSpaziVuoti() {
         var spaziVuoti = 0;
         for (var i = 0; i < this.arrayGioco.length; i++) {
             for (var k = 0; k < this.arrayGioco[i].length; k++) {
@@ -53,12 +53,12 @@ class Gioco {
         return spaziVuoti;
     }
 
-    getParolaMagica(len) {
-        var arraySoluzioni = this.parole.getPossibleSoluzioni(len);
+    prendereParolaMagica(len) {
+        var arraySoluzioni = this.parole.getPossibleSolution(len);
         var dir = Math.floor(Math.random() * arraySoluzioni.length);
         var genPar = arraySoluzioni[dir];
         genPar = this.parole.formatWord(genPar);
-        this.modalita.setParolaMagica(genPar);
+        this.modalita.parolaMagica = genPar;
     }
 
     inserisciParolaMagica() {
@@ -74,17 +74,17 @@ class Gioco {
         }
     }
 
-    canGetParolaMagica() {
-        var spaziVuoti = this.getFreeSpace();
+    puoiDareParolaMagica() {
+        var spaziVuoti = this.prendereSpaziVuoti();
         if (spaziVuoti > this.difficolta.grandezzaMatriceX) {
             return true;
         }
-        if (spaziVuoti <= 2) {
-            return true;
-        }
-        if (spaziVuoti > 2 && spaziVuoti <= this.difficolta.grandezzaMatriceX - 1) {
-            this.getParolaMagica(spaziVuoti);
+        if (spaziVuoti > 2 && spaziVuoti <= this.difficolta.grandezzaMatriceX) {
+            this.prendereParolaMagica(spaziVuoti);
             return false;
+        }
+        if (spaziVuoti <= 2) {
+            generaCampo();
         }
     }
 
@@ -94,7 +94,7 @@ class Gioco {
 
         var i = 0;
         if (this.modalita.modalita == "normale") {
-            while (this.canGetParolaMagica()) {
+            while (this.puoiDareParolaMagica()) {
                 var dir = Math.floor(Math.random() * this.parole.arrayParole.length);
                 if (this.arrayControlloNumeri.includes(dir)) {
                     continue;
@@ -103,12 +103,12 @@ class Gioco {
                 if (genPar.length <= 2 || genPar.length > this.difficolta.grandezzaMatriceX - 1) {
                     continue;
                 }
-                if (this.controllaParolaInGrid(genPar)) {
+                if (this.controllaParolaInGriglia(genPar)) {
                     this.arrayControlloNumeri.push(dir);
                 }
             }
             if (this.modalita.parolaMagica == null) {
-                vai();
+                generaCampo();
             } else {
                 this.inserisciParolaMagica();
                 this.stampaTabella();
@@ -124,7 +124,7 @@ class Gioco {
                 if (genPar.length <= 2 || genPar.length > this.difficolta.grandezzaMatriceX - 1) {
                     continue;
                 }
-                if (this.controllaParolaInGrid(genPar)) {
+                if (this.controllaParolaInGriglia(genPar)) {
                     this.arrayControlloNumeri.push(dir);
                     i++;
                 }
@@ -137,9 +137,9 @@ class Gioco {
     }
 
 
-    controllaParolaInGrid(parola) {
+    controllaParolaInGriglia(parola) {
         parola = this.parole.formatWord(parola);
-        var a = this.getPositionParola(parola).split(" ");
+        var a = this.prenderePosizioneParola(parola).split(" ");
 
         if (this.controlloArray(parola, a[0], a[1], a[2])) {
             this.inserisciDati(parola, a[0], a[1], a[2]);
@@ -163,13 +163,9 @@ class Gioco {
         }
     }
 
-    inserimentoDatiFinale(parola,x,y,spo,direzione){
-        var alfabeto = "qwertzuioplkjhgfdsayxcvbnm1234567890èéà".toUpperCase();
-        if(!alfabeto.includes(parola[spo])){
-            return;
-        }
+    inserimentoDatiFinale(parola, x, y, spo, direzione) {
         this.arrayGioco[x][y] = parola[spo];
-        this.arrayPosizioni[x][y] += direzione+" ";
+        this.arrayPosizioni[x][y] += direzione + " ";
         this.arraySoluzione[x][y] += "/" + this.numeroSoluzione;
     }
 
@@ -178,14 +174,14 @@ class Gioco {
             var spo = 0;
             var sss = parseInt(x);
             for (var i = sss; i < parola.length + sss; i++) {
-                this.inserimentoDatiFinale(parola,i,y,spo,direzione);
+                this.inserimentoDatiFinale(parola, i, y, spo, direzione);
                 spo++;
             }
         } else if (direzione == "l") {
             var spo = 0;
             var sss = parseInt(x);
             for (var i = sss; i > sss - parola.length; i--) {
-                this.inserimentoDatiFinale(parola,i,y,spo,direzione);
+                this.inserimentoDatiFinale(parola, i, y, spo, direzione);
                 spo++;
             }
         } else if (direzione == "s") {
@@ -193,14 +189,14 @@ class Gioco {
             var spo = 0;
             var sss = parseInt(y);
             for (var i = sss; i < parola.length + sss; i++) {
-                this.inserimentoDatiFinale(parola,x,i,spo,direzione);
+                this.inserimentoDatiFinale(parola, x, i, spo, direzione);
                 spo++;
             }
         } else if (direzione == "a") {
             var spo = 0;
             var sss = parseInt(y);
             for (var i = sss; i > sss - parola.length; i--) {
-                this.inserimentoDatiFinale(parola,x,i,spo,direzione);
+                this.inserimentoDatiFinale(parola, x, i, spo, direzione);
                 spo++;
             }
         } else if (direzione == "sr") {
@@ -208,7 +204,7 @@ class Gioco {
             var ssx = parseInt(x);
             var ssy = parseInt(y);
             for (var i = 0; i < parola.length; i++) {
-                this.inserimentoDatiFinale(parola,parseInt(ssx+i),parseInt(ssy+i),spo,direzione);
+                this.inserimentoDatiFinale(parola, parseInt(ssx + i), parseInt(ssy + i), spo, direzione);
                 spo++;
             }
         } else if (direzione == "sl") {
@@ -216,7 +212,7 @@ class Gioco {
             var ssx = parseInt(x);
             var ssy = parseInt(y);
             for (var i = 0; i < parola.length; i++) {
-                this.inserimentoDatiFinale(parola,parseInt(ssx-i),parseInt(ssy-i),spo,direzione);
+                this.inserimentoDatiFinale(parola, parseInt(ssx - i), parseInt(ssy - i), spo, direzione);
                 spo++;
             }
         } else if (direzione == "ar") {
@@ -224,7 +220,7 @@ class Gioco {
             var ssx = parseInt(x);
             var ssy = parseInt(y);
             for (var i = 0; i < parola.length; i++) {
-                this.inserimentoDatiFinale(parola,parseInt(ssx-i),parseInt(ssy+i),spo,direzione);
+                this.inserimentoDatiFinale(parola, parseInt(ssx - i), parseInt(ssy + i), spo, direzione);
                 spo++;
             }
         } else if (direzione == "al") {
@@ -232,16 +228,15 @@ class Gioco {
             var ssx = parseInt(x);
             var ssy = parseInt(y);
             for (var i = 0; i < parola.length; i++) {
-                this.inserimentoDatiFinale(parola,parseInt(ssx+i),parseInt(ssy-i),spo,direzione);
+                this.inserimentoDatiFinale(parola, parseInt(ssx + i), parseInt(ssy - i), spo, direzione);
                 spo++;
             }
         }
         this.numeroSoluzione++;
     }
 
-    controlloFinale(parola,x,y,spo,direzione){
-        var alfabeto = "qwertzuioplkjhgfdsayxcvbnm1234567890èéà".toUpperCase();
-        if (this.arrayGioco[x][y] == "-" || !alfabeto.includes(parola[spo])) {
+    controlloFinale(parola, x, y, spo, direzione) {
+        if (this.arrayGioco[x][y] == "-") {
             return true;
         }
         if (this.arrayGioco[x][y] != parola[spo]) {
@@ -259,9 +254,9 @@ class Gioco {
         if (direzione == "r") {
             var sss = parseInt(x);
             for (var i = sss; i < parola.length + sss; i++) {
-                if(this.controlloFinale(parola,i,y,spo,direzione)){
+                if (this.controlloFinale(parola, i, y, spo, direzione)) {
                     spo++;
-                }else{
+                } else {
                     spo++;
                     isOk = false;
                 }
@@ -270,9 +265,9 @@ class Gioco {
         } else if (direzione == "l") {
             var sss = parseInt(x);
             for (var i = sss; i > sss - parola.length; i--) {
-                if(this.controlloFinale(parola,i,y,spo,direzione)){
+                if (this.controlloFinale(parola, i, y, spo, direzione)) {
                     spo++;
-                }else{
+                } else {
                     isOk = false;
                 }
             }
@@ -280,9 +275,9 @@ class Gioco {
         } else if (direzione == "s") {
             var sss = parseInt(y);
             for (var i = sss; i < parola.length + sss; i++) {
-                if(this.controlloFinale(parola,x,i,spo,direzione)){
+                if (this.controlloFinale(parola, x, i, spo, direzione)) {
                     spo++;
-                }else{
+                } else {
                     isOk = false;
                 }
             }
@@ -290,9 +285,9 @@ class Gioco {
         } else if (direzione == "a") {
             var sss = parseInt(y);
             for (var i = sss; i > sss - parola.length; i--) {
-                if(this.controlloFinale(parola,x,i,spo,direzione)){
+                if (this.controlloFinale(parola, x, i, spo, direzione)) {
                     spo++;
-                }else{
+                } else {
                     isOk = false;
                 }
             }
@@ -301,9 +296,9 @@ class Gioco {
             var ssy = parseInt(y);
             var ssx = parseInt(x);
             for (var i = 0; i < parola.length; i++) {
-                if(this.controlloFinale(parola,parseInt(ssx+i),parseInt(ssy+i),spo,direzione)){
+                if (this.controlloFinale(parola, parseInt(ssx + i), parseInt(ssy + i), spo, direzione)) {
                     spo++;
-                }else{
+                } else {
                     isOk = false;
                 }
             }
@@ -312,9 +307,9 @@ class Gioco {
             var ssy = parseInt(y);
             var ssx = parseInt(x);
             for (var i = 0; i < parola.length; i++) {
-                if(this.controlloFinale(parola,parseInt(ssx-i),parseInt(ssy-i),spo,direzione)){
+                if (this.controlloFinale(parola, parseInt(ssx - i), parseInt(ssy - i), spo, direzione)) {
                     spo++;
-                }else{
+                } else {
                     isOk = false;
                 }
             }
@@ -323,9 +318,9 @@ class Gioco {
             var ssy = parseInt(y);
             var ssx = parseInt(x);
             for (var i = 0; i < parola.length; i++) {
-                if(this.controlloFinale(parola,parseInt(ssx-i),parseInt(ssy+i),spo,direzione)){
+                if (this.controlloFinale(parola, parseInt(ssx - i), parseInt(ssy + i), spo, direzione)) {
                     spo++;
-                }else{
+                } else {
                     isOk = false;
                 }
             }
@@ -334,9 +329,9 @@ class Gioco {
             var ssy = parseInt(y);
             var ssx = parseInt(x);
             for (var i = 0; i < parola.length; i++) {
-                if(this.controlloFinale(parola,parseInt(ssx+i),parseInt(ssy-i),spo,direzione)){
+                if (this.controlloFinale(parola, parseInt(ssx + i), parseInt(ssy - i), spo, direzione)) {
                     spo++;
-                }else{
+                } else {
                     isOk = false;
                 }
             }
@@ -345,7 +340,7 @@ class Gioco {
         }
     }
 
-    getDirezione() {
+    prendereDirezione() {
         var dir = Math.floor(Math.random() * 8);
         switch (dir) {
             case 0:
@@ -367,9 +362,9 @@ class Gioco {
         }
     }
 
-    getPositionParola(parola) {
+    prenderePosizioneParola(parola) {
         var lunghezzaParola = parola.length;
-        var direzione = this.getDirezione();
+        var direzione = this.prendereDirezione();
         var posizioneX = null;
         var posizioneY = null;
         if (direzione == "r") {
@@ -388,7 +383,7 @@ class Gioco {
             posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola));
             posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola));
         } else if (direzione == "sl") {
-            posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola )) + lunghezzaParola - 1;
+            posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola)) + lunghezzaParola - 1;
             posizioneX = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceY - lunghezzaParola)) + lunghezzaParola;
         } else if (direzione == "ar") {
             posizioneY = Math.floor(Math.random() * (this.difficolta.grandezzaMatriceX - lunghezzaParola)) + lunghezzaParola;
@@ -401,8 +396,10 @@ class Gioco {
     }
 
     stampaTabella() {
-        console.log(this.arrayPosizioni);
+        document.getElementById("solu").innerHTML = "";
+        document.getElementById("listaParole2").style.display = 'none';
         document.getElementById("result").innerHTML = "";
+
         var tabelle = "<table>"
         for (var i = 0; i < this.arrayGioco.length; i++) {
             tabelle += "<tr>"
@@ -412,11 +409,9 @@ class Gioco {
             tabelle += "</tr>"
         }
         tabelle += "</table>"
-
         document.getElementById("result").innerHTML += tabelle;
-        return tabelle;
     }
-    
+
     stampaTabellaTXT() {
         var tabelle = "";
         for (var i = 0; i < this.arrayGioco.length; i++) {
@@ -457,7 +452,7 @@ class Gioco {
 
         }
         if (this.modalita.modalita == "normale") {
-            tabelle += "<br>Parola Nascosta: _____________________";
+            tabelle += "<br>Parola Nascosta: <input type='txt'>";
         }
         tabelle += "</body>";
         return tabelle;
@@ -476,7 +471,7 @@ class Gioco {
     }
 
     stampaSoluzione() {
-        this.genColor();
+        this.generaColore();
         var solu = "<table>";
         for (var i = 0; i < this.arraySoluzione.length; i++) {
             solu += "<tr>";
@@ -498,23 +493,9 @@ class Gioco {
                 mediaColorR /= (arrayNumeriSoluzione.length - 1);
                 mediaColorG /= (arrayNumeriSoluzione.length - 1);
                 mediaColorB /= (arrayNumeriSoluzione.length - 1);
-                if (mediaColorR < 10) {
-                    mediaColorR = "00" + mediaColorR;
-                } else if (mediaColorR < 100) {
-                    mediaColorR = "0" + mediaColorR;
-                }
-
-                if (mediaColorB < 10) {
-                    mediaColorB = "00" + mediaColorB;
-                } else if (mediaColorB < 100) {
-                    mediaColorB = "0" + mediaColorB;
-                }
-
-                if (mediaColorG < 10) {
-                    mediaColorG = "00" + mediaColorG;
-                } else if (mediaColorG < 100) {
-                    mediaColorG = "0" + mediaColorG;
-                }
+                mediaColorR = this.formattaNumeroColore(mediaColorR);
+                mediaColorG = this.formattaNumeroColore(mediaColorG);
+                mediaColorB = this.formattaNumeroColore(mediaColorB);
                 if (!isNaN(mediaColor)) {
                     mediaColorR = mediaColorR.toString();
                     mediaColorG = mediaColorG.toString();
@@ -524,12 +505,12 @@ class Gioco {
                     var mediaColorArrayB = mediaColorB.split("");
                     solu += "<td style='background-color: rgb(" + mediaColorArrayR[0] + mediaColorArrayR[1] + mediaColorArrayR[2] + "," + mediaColorArrayG[0] + mediaColorArrayG[1] + mediaColorArrayG[2] + "," + mediaColorArrayB[0] + mediaColorArrayB[1] + mediaColorArrayB[2] + ")'>" + lettera + "</td>";
                 } else {
-                    if(this.modalita.getModalita() == "normale"){
-                        solu += "<td style='background-color: rgb(255,255,255);'><div style='border:1px solid black;border-radius: 15px 15px 15px 15px; padding:5px;'>"+this.arrayGioco[i][k]+"</div></td>";
-                    }else{
+                    if (this.modalita.modalita == "normale") {
+                        solu += "<td style='background-color: rgb(255,255,255);'><div style='border:1px solid black;border-radius: 15px 15px 15px 15px; padding:5px;'>" + this.arrayGioco[i][k] + "</div></td>";
+                    } else {
                         solu += "<td style='background-color: rgb(255,255,255)'></td>";
                     }
-                    
+
                 }
 
             }
@@ -538,14 +519,25 @@ class Gioco {
         solu += "</table>";
         document.getElementById('solu').innerHTML = solu;
         document.getElementById("listaParole2").style.display = 'block';
-        if(this.modalita.parolaMagica != null){
-            document.getElementById("parolaMagica").innerHTML = "Parola Nascosta: <b>"+this.modalita.parolaMagica+"</b>"; 
+        if (this.modalita.parolaMagica != null) {
+            document.getElementById("parolaMagica").innerHTML = "Parola Nascosta: <b>" + this.modalita.parolaMagica + "</b>";
             document.getElementById("parolaMagica").style.display = 'block';
+        } else {
+            document.getElementById("parolaMagica").style.display = 'none';
         }
-        
     }
 
-    isDifferentColor(r, g, b) {
+    formattaNumeroColore(colore) {
+        if (colore < 10) {
+            colore = "00" + colore;
+        } else if (colore < 100) {
+            colore = "0" + colore;
+        }
+        return colore;
+    }
+
+
+    eDifferenteColore(r, g, b) {
         var color = r + "" + g + "" + b;
         if (this.arrayColori.includes(color)) {
             return false;
@@ -555,7 +547,7 @@ class Gioco {
         }
     }
 
-    genColor() {
+    generaColore() {
         for (var i = 0; i < this.numeroSoluzione; i++) {
             var isPossible = true;
             var r, g, b;
@@ -563,29 +555,14 @@ class Gioco {
                 r = Math.floor(Math.random() * (236 - 50) + 50);
                 g = Math.floor(Math.random() * (236 - 50) + 50);
                 b = Math.floor(Math.random() * (236 - 50) + 50);
-                if (r < 10) {
-                    r = "00" + r;
-                } else if (r < 100) {
-                    r = "0" + r;
-                }
-
-                if (b < 10) {
-                    b = "00" + b;
-                } else if (b < 100) {
-                    b = "0" + b;
-                }
-
-                if (g < 10) {
-                    g = "00" + g;
-                } else if (g < 100) {
-                    g = "0" + g;
-                }
-                if (this.isDifferentColor(r, g, b)) {
+                r = this.formattaNumeroColore(r);
+                g = this.formattaNumeroColore(g);
+                b = this.formattaNumeroColore(b);
+                if (this.eDifferenteColore(r, g, b)) {
                     isPossible = false;
                 }
             }
         }
-
     }
 
 }

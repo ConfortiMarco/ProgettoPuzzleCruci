@@ -1,6 +1,6 @@
 var b;
 var f;
-function vai() {
+function generaCampo() {
     b = new Gioco();
     document.getElementById("txt").style.display = "inline";
     document.getElementById("html").style.display = "inline";
@@ -17,7 +17,7 @@ function html() {
     b.scaricaInHTML();
 }
 function stampa() {
-    b.stampante();
+    window.print();
 }
 function stampaSoluzione() {
     b.stampaSoluzione();

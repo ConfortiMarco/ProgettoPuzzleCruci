@@ -2,14 +2,14 @@ class Difficolta {
     constructor() {
         this.modalita = new Modalita();
         this.difficolta = "facile";
-        this.paroleDaTrovare = 10;
+        this.paroleDaTrovare = 15;
         this.grandezzaMatriceX = 10;
         this.grandezzaMatriceY = 10;
     }
 
     setDifficolta(){
         this.modalita.setModalita();
-        if(this.modalita.getModalita()=="bambini"){
+        if(this.modalita.modalita =="bambini"){
             if(document.getElementById('difFac').checked){
                 this.difficolta = "facile";
                 this.paroleDaTrovare = 15;
@@ -26,7 +26,7 @@ class Difficolta {
                 this.grandezzaMatriceX = 22;
                 this.grandezzaMatriceY = 22;
             }
-        }else if(this.modalita.getModalita()=="normale"){
+        }else if(this.modalita.modalita =="normale"){
             if(document.getElementById('difFac').checked){
                 this.difficolta = "facile";
                 this.grandezzaMatriceX = 12;

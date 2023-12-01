@@ -1,19 +1,23 @@
 class Parole {
     constructor() {
-        this.filePath = "../Dizionari/280000_parole_italiane.txt"
-        this.difficolta = new Difficolta();
+        this.filePath = "./Dizionari/280000_parole_italiane.txt"
         this.arrayParole = new Array();
     }
 
 
     setFile() {
         if (document.getElementById("files").files[0] == undefined) {
-            this.filePath = "../Dizionari/280000_parole_italiane.txt";
+            this.filePath = "./Dizionari/280000_parole_italiane.txt";
         } else {
-            var x = document.getElementById("files").files[0].name;
-            this.filePath = x;
+            var x = document.getElementById("files").files[0];
+            if(x.name.endsWith(".txt")){
+                var filee = URL.createObjectURL(x);
+                this.filePath = filee;
+            }else{
+                alert("Inserito file default causa file txt non rilevato")
+                this.filePath = "./Dizionari/280000_parole_italiane.txt";
+            }
         }
-        console.log(this.filePath);
 
     }
 
@@ -29,9 +33,7 @@ class Parole {
             const xhttp = new XMLHttpRequest();
             xhttp.onload = function () {
                 var testo = this.responseText.split("\n");
-
                 document.getElementById("invisible").innerHTML = testo;
-
                 resolve();
             }
             xhttp.open("GET", this.filePath);
@@ -40,7 +42,7 @@ class Parole {
     }
 
     formatWord(genPar){
-        genPar = genPar.toUpperCase();
+        genPar = genPar.toLowerCase();
         genPar = genPar.replaceAll(" ", "");
         genPar = genPar.replaceAll("è", "e");
         genPar = genPar.replaceAll("é", "e");
@@ -55,10 +57,16 @@ class Parole {
         genPar = genPar.replaceAll("ä", "a");
         genPar = genPar.replaceAll("ö", "o");
         genPar = genPar.replaceAll("ü", "u");
+        genPar = genPar.replaceAll(".", "");
+        genPar = genPar.replaceAll("!", "");
+        genPar = genPar.replaceAll("?", "");
+        genPar = genPar.replaceAll("'", "");
+        genPar = genPar.replaceAll(",", "");
+        genPar = genPar.toUpperCase();
         return genPar
     }
 
-    getPossibleSoluzioni(len){
+    getPossibleSolution(len){
         this.getArray();
         var arraySoluzioni = new Array();
         for(var i = 0;i<this.arrayParole.length;i++){

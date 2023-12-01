@@ -3,6 +3,13 @@
     text-align: center;
 }
 
+#invisible {
+    position: fixed !important;
+    visibility: hidden !important;
+    opacity: 0.01 !important;
+    pointer-events: none !important;
+}
+  
 .vertical {
     border-left: 4px solid #aaa;
     height: 95%;
@@ -169,6 +176,11 @@ table {
 
 @media print {
 
+    th,
+    td {
+        width: 20px;
+        height: 20px;
+    }
     #result {
         display: inline;
     }
@@ -177,7 +189,8 @@ table {
         display: none !important; 
     }
 
-    #solu{
-        margin-top: 370px;
+    #solu, #listaParoleStampa{
+        display: none;
     }
+
 }

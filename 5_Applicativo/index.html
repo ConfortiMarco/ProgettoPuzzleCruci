@@ -15,11 +15,11 @@
     <link rel="stylesheet" href="CSS/style.css">
 </head>
 
-<body onload="onStart()">
+<body onload="onStart();cambiaFont()">
     <div class="title">
         Puzzle Cruci
     </div>
-    <div style="display: none;" id="invisible"></div>
+    <div id="invisible"></div>
     <div class="border-all">
         <div class="contenuto minititolo ">
             Modalita
@@ -65,15 +65,9 @@
         </div>
     </div>
     <div>
-        <br>
-        <br>
         <center>
-
-            <br>
-            <button id="GenCru" onclick="vai();">Genera CruciPuzzle</button>
+            <button id="GenCru" onclick="generaCampo();">Genera CruciPuzzle</button>
             <button id="GenSol" onclick="stampaSoluzione();">Genera Soluzione</button>
-            <br>
-            <br>
 
             <div id="result">
 
@@ -81,7 +75,7 @@
         </center>
     </div>
     <div>
-        <div style="column-count:5;margin:50px;" id="listaParole"></div>
+        <div style="column-count:4;margin:50px;" id="listaParole"></div>
     </div>
     <div>
         <center>
@@ -93,8 +87,8 @@
     </div>
     <br>
 
-    <div>
-        <div style="column-count:5;display: none;margin:50px;" id="listaParole2"></div>
+    <div id="listaParoleStampa">
+        <div style="column-count:4;display: none;margin:50px;" id="listaParole2"></div>
     </div>
     <div>
         <div id="parolaMagica" style="display: none;text-align: center;font-size: 20px;"></div>
@@ -106,7 +100,7 @@
         <center>
             <button id="txt" style="display: none;" onclick="txt()">ScaricaTXT</button>
             <button id="html" style="display: none;" onclick="html()">ScaricaHTML</button>
-            <button id="stampa" style="display: none;" onclick="window.print()">Stampa</button>
+            <button id="stampa" style="display: none;" onclick="stampa()">Stampa</button>
         </center>
     </div>
     

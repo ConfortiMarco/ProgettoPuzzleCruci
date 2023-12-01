@@ -4,53 +4,84 @@
 
 skinparam classAttributeIconSize 0
 class Gioco {
- difficolta: Difficolta
- arrayGioco:String[][]
- parole: Parole
- font:Font
+    difficolta: Difficolta
+    modalita: Modalita
+    parole: Parole
+    arrayListaParole: String[][]
+    arrayGioco:String[][]
+    arrayControlloNumeri: String[][]
+    arrayColori:String[]
+    arrayPosizioni:String[]
+    arraySoluzione:String[][]
+    numeroSoluzione:int
 
- Gioco(Difficolta difficolta, Parole parole, Font font)
- 
- GeneraGioco()
-
+    scaricaInTxt()
+    scaricaInHTML()
+    creaArray()
+    prendereSpaziVuoti()
+    prendereParolaMagica()
+    inserisciParolaMagica()
+    puoiDareParolaMagica()
+    InData()
+    controllaParolaInGriglia()
+    riempiSpazi()
+    inserimentoDatiFinale()
+    inserisciDati()
+    controlloFinale()
+    controlloArray()
+    prendereDirezione()
+    prenderePosizioneParola()
+    stampaTabella()
+    stampaTabellaTXT()
+    stampaTabellaHTML()
+    stampaLista()
+    stampaSoluzione()
+    formattaNumeroColore()
+    eDifferenteColore()
+    generaColore()
 }
+
 class Parole{
- fileParole:File
- arrayParole:String[]
- parolaFinale: String
+    filePath:String
+    arrayParole:String[]
 
- GeneraParole()
- PrendiParoleDaFile()
+    setFile()
+    getArray()
+    readFile()
+    formatWord()
+    getPossibleSolution()
+    downloadFileTXT()
+    downloadFileHTML()
 }
+
 class Modalita{
- modalita:String
+    modalita:String
+    parolaMagica:String
 
- getModalita()
+    setModalita()
 }
+
 class Difficolta{
- difficolta:String
- modalita:Modalita
- grandezzaMatriceX: Number
- grandezzaMatriceY: Number
- paroleDaTrovare: Number
- parolaFinaleEsiste: Boolean
+    difficolta:String
+    modalita:Modalita
+    grandezzaMatriceX: Number
+    grandezzaMatriceY: Number
+    paroleDaTrovare: Number
 
- Difficolta(Modalita modalita)
-
- getMatriceX()
- getMatriceY()
- getParoleDaTrovare()
- getParolaFinaleEsiste()
+    setDifficolta()
 
 }
+
 class Font{
     font:String
-
-    getFont()
+    fontArray:String[]
+    
+    generaListaFonts()
+    setFont()
 }
 
 Difficolta --> Gioco
 Parole --> Gioco
-Font --> Gioco
+Modalita --> Gioco
 Modalita --> Difficolta
 @enduml
