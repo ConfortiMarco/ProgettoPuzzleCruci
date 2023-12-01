@@ -20,7 +20,7 @@
 }
 
 .border-all {
-    border: solid black 1px;
+    border: solid gray 1px;
     margin: 50px !important;
     position: relative;
     height: 125px;
